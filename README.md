@@ -2,6 +2,11 @@
 
 For critical planning and budgeting 
 
+## Repository Structure
+
+- Scripts
+- Data
+- Images
 
 
 ## About the Team
