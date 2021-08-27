@@ -7,6 +7,7 @@ This repository consists of a collection of Python Notebooks to preprocess Geosp
 ## Repository Structure
 
 - Scripts
+- Analytics Notebooks
 - Data
 - Images
 
