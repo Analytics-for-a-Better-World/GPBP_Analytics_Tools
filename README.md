@@ -1,15 +1,28 @@
 # Geospatial Planning and Budgeting Platform
 
-For critical planning and budgeting 
+Frontline end-users and decision makers in many cases lack simple, powerful, and interactive digital decision support tools for improving public service access. 
+
+The Geospatial Planning and Budgeting Platform is designed as a Digital Public Good which allow users to examine key spatial layers related to facility location, road network consolidations, population distribution, administrative boundaries, risk layers (e.g., flooding), and satellite imagery. 
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/42402451/131418031-dbc202e8-cb6f-40a4-9063-80a3efbb92ae.png">
+
+The platform enables descriptive analytics on different data stacks created from such varied geospatial information to perform access analytics, enable data-driven investment prioritisation, provides a platform for risk-based supervision, and support capabilities to model scenarios and prescribe interventions in an interactive and iterative data-driven and data-informed decision support platform.
 
 This repository consists of a collection of Python Notebooks to preprocess Geospatial Data and perform descriptive and prescriptive analytics on them to feed in to the Geospatial Planning and Budgeting Platform.
 
 ## Repository Structure
 
 - Scripts
+--   This section
+
 - Analytics Notebooks
+-- This section
+
 - Data
+-- This section
+
 - Images
+-- This section
 
 ## Style Guide for Python Scripts
 This repository uses the [PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/#id14) for improving readability of the code and to maintain consistency. 
