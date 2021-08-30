@@ -1,6 +1,6 @@
 # Geospatial Planning and Budgeting Platform
 
-Frontline end-users and decision makers in many cases lack simple, powerful, and interactive digital decision support tools for improving public service access. 
+Frontline end-users and decision makers in many cases lack simple, powerful, and interactive digital decision support tools for improving public service access. The Geospatial Planning and Budgeting Platform (GPBP) empowers decision-makers at national and sub-national government level to better prioritize public infrasturcture investments in health facilities and transport networks for the greatest value for money impacts. 
 
 The Geospatial Planning and Budgeting Platform is designed as a Digital Public Good which allow users to examine key spatial layers related to facility location, road network consolidations, population distribution, administrative boundaries, risk layers (e.g., flooding), and satellite imagery. 
 
