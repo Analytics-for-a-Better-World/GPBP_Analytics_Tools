@@ -29,6 +29,7 @@ Some of the key guidelines are outlined below. For details visit [PEP 8 -- Style
 
 Colab can load public github notebooks directly, with no required authorization step. For example, consider the notebook at this address: https://github.com/googlecolab/colabtools/blob/master/notebooks/colab-github-demo.ipynb. The direct colab link to this notebook is: https://colab.research.google.com/github/googlecolab/colabtools/blob/master/notebooks/colab-github-demo.ipynb. To generate such links in one click, you can use the [Open in Colab](https://chrome.google.com/webstore/detail/open-in-colab/iogfkhleblhcpcekbiedikdehleodpjo) Chrome extension.
 
+For detailed information on this and demos on integrating Github with Colab [Click here](https://colab.research.google.com/github/googlecolab/colabtools/blob/master/notebooks/colab-github-demo.ipynb)
 
 ## About the Team
 The design, development and deployment of the Geospatial Planning and Budgeting Platform is led by teams at [World Bank](https://www.worldbank.org/en/home) and [Analytics for a Better World](https://analyticsbw.org) in collaboration with governmental, non-governmental organisations, startups and researchers from around the globe.
