@@ -23,7 +23,7 @@ Some of the key guidelines are outlined below. For details visit [PEP 8 -- Style
 - Use blank lines in functions, sparingly, to indicate logical sections.
 - 
 
-## Connecting GitHub with Google Colaboratory
+## Connecting with Google Colaboratory
 
 [Google Colaboratory](http://colab.research.google.com) is designed to integrate cleanly with GitHub, allowing both loading notebooks from github and saving notebooks to github. 
 
