@@ -4,8 +4,6 @@ For critical planning and budgeting
 
 This repository consists of a collection of Python Notebooks to preprocess Geospatial Data and perform descriptive and prescriptive analytics on them to feed in to the Geospatial Planning and Budgeting Platform.
 
-
-
 ## Repository Structure
 
 - Scripts
@@ -13,7 +11,7 @@ This repository consists of a collection of Python Notebooks to preprocess Geosp
 - Data
 - Images
 
-## Style Guide 
+## Style Guide for Python Scripts
 This repository uses the [PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/#id14) for improving readability of the code and to maintain consistency. 
 
 Some of the key guidelines are outlined below. For details visit [PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/#id14) 
@@ -24,6 +22,12 @@ Some of the key guidelines are outlined below. For details visit [PEP 8 -- Style
 - Surround top-level function and class definitions with two blank lines. Method definitions inside a class are surrounded by a single blank line. Extra blank lines may be used (sparingly) to separate groups of related functions. Blank lines may be omitted between a bunch of related one-liners (e.g. a set of dummy implementations).
 - Use blank lines in functions, sparingly, to indicate logical sections.
 - 
+
+## Connecting GitHub with Google Colaboratory
+
+[Google Colaboratory](http://colab.research.google.com) is designed to integrate cleanly with GitHub, allowing both loading notebooks from github and saving notebooks to github. 
+
+Colab can load public github notebooks directly, with no required authorization step. For example, consider the notebook at this address: https://github.com/googlecolab/colabtools/blob/master/notebooks/colab-github-demo.ipynb. The direct colab link to this notebook is: https://colab.research.google.com/github/googlecolab/colabtools/blob/master/notebooks/colab-github-demo.ipynb. To generate such links in one click, you can use the [Open in Colab](https://chrome.google.com/webstore/detail/open-in-colab/iogfkhleblhcpcekbiedikdehleodpjo) Chrome extension.
 
 
 ## About the Team
