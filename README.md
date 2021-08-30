@@ -4,6 +4,8 @@ For critical planning and budgeting
 
 This repository consists of a collection of Python Notebooks to preprocess Geospatial Data and perform descriptive and prescriptive analytics on them to feed in to the Geospatial Planning and Budgeting Platform.
 
+
+
 ## Repository Structure
 
 - Scripts
@@ -27,8 +29,11 @@ Some of the key guidelines are outlined below. For details visit [PEP 8 -- Style
 ## About the Team
 The design, development and deployment of the Geospatial Planning and Budgeting Platform is led by teams at [World Bank](https://www.worldbank.org/en/home) and [Analytics for a Better World](https://analyticsbw.org) in collaboration with governmental, non-governmental organisations, startups and researchers from around the globe.
 
+- [Britt van Veggel](https://www.linkedin.com/in/britt-van-veggel-754288a8/) - MSc. Applied Mathematics, TU Delft
 - [Prof. Dick Den Hertog](https://www.uva.nl/profiel/h/e/d.denhertog/d.den-hertog.html)- Professor, University of Amsterdam
+- [Joyce Antonissen](https://www.linkedin.com/in/joyceantonissen/) - Researcher, University of Amsterdam
 - [Kai-Alexander Kaiser](https://live.worldbank.org/experts/kai-alexander-kaiser) - Senior Economist, World Bank
+- [Parvathy Krishnan K](https://www.linkedin.com/in/parvathykrishnank/) - ST Consultant, World Bank
 
 
 
