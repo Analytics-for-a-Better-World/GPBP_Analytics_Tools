@@ -15,7 +15,7 @@ def getvariables(n, m, X, Y):
     return(Xvalues, Yvalues)
     
 
-def OptimizationModel(array_household, current_hospitals_ID, new_hospitals_ID, distance_matrix, S, hosp_count, maxTimeInSeconds=100, mipGap=.01, trace=False):
+def OptimizationModel(array_household, current_hospitals_ID, new_hospitals_ID, distance_matrix, S, hosp_count, maxTimeInSeconds=100, mipGap=.001, trace=False):
     
     import time
     import gurobipy as gb
