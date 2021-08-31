@@ -1,10 +1,11 @@
 def get_length_edge(x):
-  lon_x = float(x['from_x'])
-  lat_x = float(x['from_y'])    
-  lon_y = float(x['to_x'])
-  lat_y = float(x['to_y'])
-  dist = geopy.distance.geodesic((lat_x,lon_x),(lat_y,lon_y))
-  return((dist.meters)/1000)
+    import geopy.distance
+    lon_x = float(x['from_x'])
+    lat_x = float(x['from_y'])    
+    lon_y = float(x['to_x'])
+    lat_y = float(x['to_y'])
+    dist = geopy.distance.geodesic((lat_x,lon_x),(lat_y,lon_y))
+    return((dist.meters)/1000)
 
 def get_nodes_and_edges(json_file,rounding=5):
     import pandas as pd
@@ -32,9 +33,9 @@ def get_nodes_and_edges(json_file,rounding=5):
     edges_attr = pd.merge(edges,nodes,left_on=['from_x','from_y'], right_on=['lon','lat'])
     edges_attr = pd.merge(edges_attr,nodes,left_on=['to_x','to_y'], right_on=['lon','lat'])
     edges_attr.rename(columns= {'nodeID_x':'node_start','nodeID_y':'node_end'},inplace=True)
-    edges_attr['len_km'] = edges_attr[['from_x','from_y','to_x','to_y']].apply(get_length_edge_geopy,axis=1)
+    edges_attr['len_km'] = edges_attr[['from_x','from_y','to_x','to_y']].apply(get_length_edge,axis=1)
 
     # Road Network Data in Nodes and Edges nodes as a Pandana Network
     network = pandana.Network(nodes['lon'], nodes['lat'], 
                               edges_attr['node_start'], edges_attr['node_end'], edges_attr[['len_km']],twoway=True)
-    return network
+    return nodes, edges_attr, network
