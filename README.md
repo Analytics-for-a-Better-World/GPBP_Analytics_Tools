@@ -46,6 +46,7 @@ The design, development and deployment of the Geospatial Planning and Budgeting 
 
 - [Britt van Veggel](https://www.linkedin.com/in/britt-van-veggel-754288a8/) - MSc. Applied Mathematics, TU Delft
 - [Prof. Dick Den Hertog](https://www.uva.nl/profiel/h/e/d.denhertog/d.den-hertog.html)- Professor, University of Amsterdam
+- [Fleur Theulen](https://www.linkedin.com/in/fleur-theulen-1054461b4/)
 - [Prof. Joaquim Gromicho](https://www.linkedin.com/in/joaquim-gromicho-a891643/) - Science and Education Officer at ORTEC & Professor at University of Amsterdam
 - [Joyce Antonissen](https://www.linkedin.com/in/joyceantonissen/) - Researcher, University of Amsterdam
 - [Kai-Alexander Kaiser](https://live.worldbank.org/experts/kai-alexander-kaiser) - Senior Economist, World Bank
