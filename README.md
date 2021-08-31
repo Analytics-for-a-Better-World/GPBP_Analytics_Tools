@@ -47,7 +47,7 @@ The design, development and deployment of the Geospatial Planning and Budgeting 
 - [Prof. Joaquim Gromicho](https://www.linkedin.com/in/joaquim-gromicho-a891643/) - Science and Education Officer at ORTEC & Professor at University of Amsterdam
 - [Joyce Antonissen](https://www.linkedin.com/in/joyceantonissen/) - Researcher, University of Amsterdam
 - [Kai-Alexander Kaiser](https://live.worldbank.org/experts/kai-alexander-kaiser) - Senior Economist, World Bank
-- [Parvathy Krishnan K](https://www.linkedin.com/in/parvathykrishnank/) - Data Scientist Consultant at World Bank 
+- [Parvathy Krishnan K](https://www.linkedin.com/in/parvathykrishnank/) - Data Scientist (Consultant) at World Bank 
 
 
 
