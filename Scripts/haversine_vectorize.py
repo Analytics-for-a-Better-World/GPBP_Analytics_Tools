@@ -1,4 +1,7 @@
 def haversine_vectorize(lon1, lat1, lon2, lat2):
+    
+    import numpy as np
+    
     lon1, lat1, lon2, lat2 = map(np.radians, [lon1, lat1, lon2, lat2])
     newlon = lon2 - lon1
     newlat = lat2 - lat1
