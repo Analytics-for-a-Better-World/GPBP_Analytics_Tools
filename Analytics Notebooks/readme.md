@@ -5,7 +5,7 @@ Analytics Notebooks folder include Jupyter Notebooks that make use of the Python
 ### Descriptive
 
 1. Visualising Global Population Datasets with Python 
-2. Travel Time Analytis to Healthcare Facilities in Timor Leste
+2. Travel Time Analytics to Healthcare Facilities in Timor Leste
 3. Travel Time Analytics to Stroke Care Facilities in Vietnam
 
 ### Prescriptive
