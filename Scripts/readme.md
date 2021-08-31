@@ -16,4 +16,4 @@ This folder includes all the Python Scripts required to execute and test the dif
 
 - Optimization Algorithm
   - Creating a grid of n\*n km within a polygon  
-  - Gurobi optimization model
+  - [Gurobi optimization model](https://github.com/parvathykrishnank/gpbp/blob/cf3597a73cf18bca1ac2477df87f40c7cda32cc4/Scripts/optimization_model.py)
