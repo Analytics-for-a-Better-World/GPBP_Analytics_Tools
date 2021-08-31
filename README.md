@@ -21,9 +21,6 @@ This repository consists of a collection of Python Notebooks to preprocess Geosp
 - Data
 -- This section
 
-- Images
--- This section
-
 ## Style Guide for Python Scripts
 This repository uses the [PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/#id14) for improving readability of the code and to maintain consistency. 
 
