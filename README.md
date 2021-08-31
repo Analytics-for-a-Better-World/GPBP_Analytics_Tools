@@ -13,13 +13,11 @@ This repository consists of a collection of Python Notebooks to preprocess Geosp
 ## Repository Structure
 
 - Scripts
---   This section
+--   This section includes the python scripts and functions developed as part of GPBP
 
 - Analytics Notebooks
--- This section
+-- This section includes Descriptive and Prescriptive Analytics Notebooks for Timor Leste and Vietnam
 
-- Data
--- This section
 
 ## Style Guide for Python Scripts
 This repository uses the [PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/#id14) for improving readability of the code and to maintain consistency. 
@@ -31,7 +29,6 @@ Some of the key guidelines are outlined below. For details visit [PEP 8 -- Style
 - Although formulas within a paragraph always break after binary operations and relations, displayed formulas always break before binary operations
 - Surround top-level function and class definitions with two blank lines. Method definitions inside a class are surrounded by a single blank line. Extra blank lines may be used (sparingly) to separate groups of related functions. Blank lines may be omitted between a bunch of related one-liners (e.g. a set of dummy implementations).
 - Use blank lines in functions, sparingly, to indicate logical sections.
-- 
 
 ## Connecting with Google Colaboratory
 
