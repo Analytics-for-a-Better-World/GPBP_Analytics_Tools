@@ -12,7 +12,7 @@ This folder includes all the Python Scripts required to execute and test the dif
   
 - Accessibility Analytics
   - [Haversine vectorise for calculating haversine distance between lat-lon pairs](https://github.com/parvathykrishnank/gpbp/blob/2fb6a8e3b1d07c92b25987e6eb3d64f1752a77af/Scripts/haversine_vectorize.py)
-  - Distance matrix calculation with contraction hierarchies in Python using [Pandana](https://udst.github.io/pandana/network.html)
+  - [Distance matrix calculation](https://github.com/parvathykrishnank/gpbp/blob/b1744dbb03528d1b9226fec9da74c85eb4808ca5/Scripts/distance_matrix.py) with contraction hierarchies in Python using [Pandana](https://udst.github.io/pandana/network.html)
 
 - Optimization Algorithm
   - Creating a grid of n\*n km within a polygon  
