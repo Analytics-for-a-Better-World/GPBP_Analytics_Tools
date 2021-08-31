@@ -11,6 +11,7 @@ This folder includes all the Python Scripts required to execute and test the dif
   - Converting road vector in shapefile or geojson format into a Pandana network for accessibility analytics 
   
 - Accessibility Analytics
+  - Haversine vectorise for calculating haversine distance between lat-lon pairs
   - Distance matrix calculation with contraction hierarchies in Python using [Pandana](https://udst.github.io/pandana/network.html)
 
 - Optimization Algorithm
