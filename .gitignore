@@ -1,3 +1,12 @@
 
 .DS_Store
-Analytics Notebooks/.ipynb_checkpoints/Vietnam_Optmisation_Model-checkpoint.ipynb
+Data/*/*
+Data/
+*.pyc
+Data/Administrative Boundaries/Timor Leste/readme.md
+Data/Administrative Boundaries/Vietnam/gadm36_VNM_0.cpg
+Data/Administrative Boundaries/Vietnam/gadm36_VNM_0.dbf
+Data/Administrative Boundaries/Vietnam/gadm36_VNM_0.prj
+Data/Administrative Boundaries/Vietnam/gadm36_VNM_0.shp
+Data/Administrative Boundaries/Vietnam/gadm36_VNM_0.shx
+Data/Population/readme.md
