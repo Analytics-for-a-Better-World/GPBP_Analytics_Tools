@@ -29,7 +29,7 @@ def ParetoCurve(df_combined_output, current_hospitals):
                 arrowhead=1)
 
     fig.add_shape(type="line",
-        x0=len(current_hospitals), y0=0, x1=len(current_hospitals), y1=100,
+        x0=len(current_hospitals), y0=0, x1=len(current_hospitals), y1=120,
         line=dict(color="RoyalBlue",width=1)
     )
 
@@ -39,7 +39,7 @@ def ParetoCurve(df_combined_output, current_hospitals):
 # In[ ]:
 
 
-def CreateMap(dist_threshold, hosp_added, population, current_hospitals, new_hospitals, df_combined, df_combined_output):
+def CreateMap(dist_threshold, hosp_added, population, current_hospitals, new_hospitals, df_combined, df_combined_output,filename):
     # get pop coordinates
     pop_id = pd.DataFrame(df_combined.reset_index()['Pop_ID'])
     pop_coordinates = pd.merge(pop_id,population,right_on='ID',left_on='Pop_ID')
@@ -152,5 +152,5 @@ def CreateMap(dist_threshold, hosp_added, population, current_hospitals, new_hos
         folium.Circle(location=[lat,lon],radius=10,color=color_circle,fill_color=color_circle,opacity=opacity).add_to(map_osm)
     
     # Export map
-    map_osm.save('map_Vietnam.html')
+    map_osm.save(filename+'.html')
 
