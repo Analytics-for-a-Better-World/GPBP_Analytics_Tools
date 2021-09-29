@@ -69,7 +69,7 @@ def OptimizationModel(array_household, current_hospitals_ID, new_hospitals_ID, d
     # Limit number of facilities located 
     s = M.addLConstr(gb.quicksum(X[j] for j in range(m))<= p)
     
-    tModelling = time.time()-tstart
+    modelling_time = time.time()-tstart
     tstart = time.time()
     
     # Optimize the model and extract solution
@@ -93,7 +93,7 @@ def OptimizationModel(array_household, current_hospitals_ID, new_hospitals_ID, d
 
         obj_val_array.append([S,each_hosp_count,obj_val,list(Xvalues),list(Yvalues)])
     
-    tSolving = time.time() - tstart 
+    solving_time = time.time() - tstart 
     
     df_opt_array = pd.DataFrame(obj_val_array)
     df_opt_array.columns = ['km','number_of_new_hospitals','count','array_hosp','array_hh']
@@ -101,7 +101,7 @@ def OptimizationModel(array_household, current_hospitals_ID, new_hospitals_ID, d
     df_opt_array['%'] = df_opt_array['count']*100/sum(array_household)
     df_opt_array['%'] = df_opt_array['%'].round(1)
     
-    return df_opt_array, tModelling, tSolving
+    return df_opt_array, modelling_time, solving_time
         
     
 
