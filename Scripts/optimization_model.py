@@ -36,7 +36,7 @@ def OptimizationModel(array_household, current_hospitals_ID, new_hospitals_ID, d
     
     # collect the indices of the distances below the threshold 
     II = dist['Pop_ID']
-    JJ = dist['Hosp/Cluster']
+    JJ = dist['HospCluster']
     
     IJ = { i : [] for i in range(n) }
     for i,j in zip(II,JJ):
@@ -63,7 +63,7 @@ def OptimizationModel(array_household, current_hospitals_ID, new_hospitals_ID, d
 
     # Limit number of hospitals a household is connected to, let a household only connect to an opened facility
     M.addConstrs((Y[i] <= (gb.quicksum(X[j] for j in IJ[i]))) for i in range(n))
-#     M.addConstrs(Y[i] <= (gb.quicksum(X[j] for j in dist['Hosp/Cluster'].loc[dist['Pop_ID']==i])) for i in range(n))
+#     M.addConstrs(Y[i] <= (gb.quicksum(X[j] for j in dist['HospCluster'].loc[dist['Pop_ID']==i])) for i in range(n))
 
     
     # Limit number of facilities located 
