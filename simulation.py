@@ -34,10 +34,11 @@ def random_gps(bounds: Polygon):
 def open_connection():
     mydb = connect(
         # fixed to connect to db server here
-        host="localhost",
-        user="nyfed",
+        host="192.168.1.93",
+        port="3306",
+        user="wbg",
         password="Test@123",
-        database='nyfed_database'
+        database='gpbp'
     )
     return mydb
 
@@ -56,9 +57,14 @@ def travel_time_req(source_lon, source_lat, to_list):
     request_url = """https://api.mapbox.com/directions-matrix/v1/mapbox/driving-traffic/"""
     request_params = """?annotations=duration&sources=0&access_token="""
     request_mapbox_driving = request_url + coordinate_str + request_params + token
-    request_pack = requests.get(request_mapbox_driving)
-    duration_minutes = json.loads(request_pack.content)['durations'][0][1:]
-    return duration_minutes
+    try:
+        request_pack = requests.get(request_mapbox_driving)
+        duration_minutes = json.loads(request_pack.content)['durations'][0][1:]
+        return duration_minutes
+    except:
+        # I did a blind try-except since I dont know which error might come from the MapBox API
+        # either they dont have the calculation or the token has reached its minutely limit
+        return False
 
 
 def record_result(res_list: tuple):
@@ -76,7 +82,7 @@ def record_result(res_list: tuple):
     """
     mydb = open_connection()
     cursor = mydb.cursor()
-    insert_query = """  INSERT INTO gbpb(req_time, source, prov_name, drive_times, harv_dist, resp_time, runtime) 
+    insert_query = """  INSERT INTO gbpb(req_time, source_point, prov_name, drive_times, harv_dist, resp_time, runtime) 
                         VALUES(%s ,%s ,%s ,%s ,%s ,%s ,%s)"""
     for res in res_list:
         cursor.execute(insert_query, res)
@@ -143,6 +149,9 @@ def sth(prov_name, prov_df: pd.DataFrame, facs_df: pd.DataFrame):
         # the queried_res come in the form of list of drive time in seconds with corresponding index with the facilities
         start_time = datetime.now()
         queried_res = travel_time_req(gps_lon, gps_lat, facs_list[start_idx: end_idx])
+        # here is to capture the case of failed connection and limited access from Mapbox API
+        if not queried_res:
+            queried_res = []
         end_time = datetime.now()
         cost = end_time - start_time
         # transform the result list into str for db log
@@ -171,7 +180,7 @@ def main():
     # (roughly, since I will not try to do multithreading, it will all be sequential request)
     simulate_list = province_list + np.random.choice(province_list, 57)
     np.random.shuffle(simulate_list)
-    for idx in range(number_of_simulation):
+    for idx in tqdm(range(number_of_simulation)):
         # for the distribution of time request across all 63 provinces
         # in each hour, I will do a subset of 60 provinces from the list of 63
         start_time = datetime.now()
@@ -206,25 +215,26 @@ def main():
 
 if __name__ == '__main__':
     # HERE LIES MY UNIT TEST
-    # file_name = './Data/gadm_vietnam.geojson'
-    # edges = gpd.read_file(file_name, driver='GeoJSON')
-    # temp = edges.iloc[0]
-    #
-    # start = datetime.now()
-    # temp = random_gps(temp["geometry"])
-    # end = datetime.now()
-    # print((end - start).microseconds)
-    #
-    # stroke_facs = pd.read_csv('./Data/stroke_facs_latest.csv')
-    # stroke_facs = deepcopy(stroke_facs[['Name_English', 'longitude', 'latitude', 'pro_name_e', 'dist_name_e']])
-    # stroke_facs.columns = ['Facility_Name', 'Lon', 'Lat', 'Province', 'District']
-    #
-    # start = datetime.now()
-    # temp = return_closest_45(temp[0], temp[1], stroke_facs)
-    # end = datetime.now()
-    # print((end - start).microseconds)
-    # # temp = travel_time_req(-122.42, 37.78, [[-122.45, 37.91], [-122.48, 37.73]])
-    # temp, a, b, c = sth('VNM.1_1', edges[['GID_1', 'NAME_1', 'geometry']], stroke_facs)
-    # pass
+    file_name = './Data/gadm_vietnam.geojson'
+    edges = gpd.read_file(file_name, driver='GeoJSON')
+    temp = edges.iloc[0]
+
+    start = datetime.now()
+    temp = random_gps(temp["geometry"])
+    end = datetime.now()
+    print((end - start).microseconds)
+
+    stroke_facs = pd.read_csv('./Data/stroke_facs_latest.csv')
+    stroke_facs = deepcopy(stroke_facs[['Name_English', 'longitude', 'latitude', 'pro_name_e', 'dist_name_e']])
+    stroke_facs.columns = ['Facility_Name', 'Lon', 'Lat', 'Province', 'District']
+
+    start = datetime.now()
+    temp = return_closest_45(temp[0], temp[1], stroke_facs)
+    end = datetime.now()
+    print((end - start).microseconds)
+    # temp = travel_time_req(-122.42, 37.78, [[-122.45, 37.91], [-122.48, 37.73]])
+    temp, a, b, c = sth('VNM.1_1', edges[['GID_1', 'NAME_1', 'geometry']], stroke_facs)
+    print(temp, a, b, c)
+    pass
     # AND HERE IS THE MAIN SIMULATION
-    main()
+    # main()
