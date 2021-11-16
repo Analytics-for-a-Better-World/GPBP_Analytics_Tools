@@ -1,0 +1,7 @@
+Flask
+geopandas
+shapely
+requests
+mysql_connector_python
+tqdm
+geopy
