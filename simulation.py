@@ -61,7 +61,8 @@ def travel_time_req(source_lon, source_lat, to_list):
         request_pack = requests.get(request_mapbox_driving)
         duration_minutes = json.loads(request_pack.content)['durations'][0][1:]
         return duration_minutes
-    except:
+    except Exception as e:
+        print(e)
         # I did a blind try-except since I dont know which error might come from the MapBox API
         # either they dont have the calculation or the token has reached its minutely limit
         return False
