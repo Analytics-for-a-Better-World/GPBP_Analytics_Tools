@@ -128,8 +128,7 @@ def return_closest_45(source_lon, source_lat, facs_df):
     return res_df.iloc[:45, :]
 
 
-# it is just me tired and dont know how to name this function
-def sth(prov_name, prov_df: pd.DataFrame, facs_df: pd.DataFrame):
+def simulation_core(prov_name, prov_df: pd.DataFrame, facs_df: pd.DataFrame):
     """
     Core part of the simulation. It requests the driving-time API and calculate result.
     This would later become the core for the main API
@@ -211,10 +210,9 @@ def main():
 
             start_each = datetime.today()
             # main simulation
-            # 2 provinces for each run
-            # this is the first one
             first_prov = simulate_list.pop()
-            final_drive_res, final_request_time, gps_str, harv_dist_str = sth(first_prov, province_bounds, stroke_facs)
+            final_drive_res, final_request_time, gps_str, harv_dist_str = simulation_core(first_prov,
+                                                                                          province_bounds, stroke_facs)
             end_first = datetime.now()
             cost_first = round((start_each - end_first).microseconds / 1000, 2)
             record_result((start_each, gps_str, first_prov,
