@@ -6,7 +6,7 @@ import json
 import requests
 from shapely.geometry import Point, Polygon
 from mysql.connector import connect
-import geopy.distance
+import math
 import time
 from copy import deepcopy
 from tqdm import tqdm
@@ -22,8 +22,8 @@ def random_gps(bounds: Polygon):
     inside_poly = False
     min_lon, min_lat, max_lon, max_lat = bounds.bounds
     while not inside_poly:
-        new_lon = np.random.uniform(min_lon, max_lon)
-        new_lat = np.random.uniform(min_lat, max_lat)
+        new_lon = round(np.random.uniform(min_lon, max_lon), 5)
+        new_lat = round(np.random.uniform(min_lat, max_lat), 5)
         new_gps = Point(new_lon, new_lat)
         if bounds.contains(new_gps):
             inside_poly = True
@@ -38,7 +38,7 @@ def open_connection():
         port="3306",
         user="wbg",
         password="Test@123",
-        database='gpbp'
+        database='gbpb'
     )
     return mydb
 
@@ -82,12 +82,10 @@ def record_result(res_list: tuple):
     """
     mydb = open_connection()
     cursor = mydb.cursor()
-    insert_query = """  INSERT INTO gbpb(req_time, source_point, prov_name, drive_times, harv_dist, resp_time, runtime) 
+    insert_query = """  INSERT INTO gpbp(req_time, source_point, prov_name, drive_times, harv_dist, resp_time, runtime) 
                         VALUES(%s ,%s ,%s ,%s ,%s ,%s ,%s)"""
-    for res in res_list:
-        cursor.execute(insert_query, res)
-        mydb.commit()
-
+    cursor.execute(insert_query, res_list)
+    mydb.commit()
     cursor.close()
     mydb.close()
     return
@@ -153,7 +151,7 @@ def sth(prov_name, prov_df: pd.DataFrame, facs_df: pd.DataFrame):
         if not queried_res:
             queried_res = []
         end_time = datetime.now()
-        cost = end_time - start_time
+        cost = round((end_time - start_time).microseconds / 1000, 2)
         # transform the result list into str for db log
         final_drive_res += ','.join(str(x) for x in queried_res)
         final_request_time = final_request_time + ',' + str(cost)
@@ -161,11 +159,11 @@ def sth(prov_name, prov_df: pd.DataFrame, facs_df: pd.DataFrame):
     final_drive_res = final_drive_res.strip()
     final_request_time = final_request_time.strip()
     harv_dist_str = ','.join(str(x) for x in harv_dist_list).strip()
-    return final_drive_res, final_request_time, str(gps_lon) + ',' + str(gps_lat), harv_dist_str
+    return final_drive_res, final_request_time[1:], str(gps_lon) + ',' + str(gps_lat), harv_dist_str
 
 
 def main():
-    file_name = '../Data/gadm_vietnam.geojson'
+    file_name = './Data/gadm_vietnam.geojson'
     province_bounds = gpd.read_file(file_name, driver='GeoJSON')
     province_bounds = deepcopy(province_bounds[['GID_1', 'NAME_1', 'geometry']])
     province_list = list(set(province_bounds['GID_1'].to_numpy().tolist()))
@@ -173,38 +171,35 @@ def main():
     stroke_facs = deepcopy(stroke_facs[['Name_English', 'longitude', 'latitude', 'pro_name_e', 'dist_name_e']])
     stroke_facs.columns = ['Facility_Name', 'Lon', 'Lat', 'Province', 'District']
     number_of_province = 63
-    number_of_simulation = 15000
-    # the number is 15000 not 30000 because for each minute,
+    number_of_simulation = 5000
+    # the number is 5000 not 30000 because for each minute,
     # I can send 30 requests with 9 stroke centres each request
-    # thus, for each minute, I can simulate 2 GPS points at the same time
+    # thus, for each minute, I can simulate 6 GPS points at the same time
     # (roughly, since I will not try to do multithreading, it will all be sequential request)
-    simulate_list = province_list + np.random.choice(province_list, 57)
+    temp = np.random.choice(province_list, 57).tolist()
+    simulate_list = province_list + np.random.choice(province_list, 57).tolist()
     np.random.shuffle(simulate_list)
-    for idx in tqdm(range(number_of_simulation)):
+    for _ in tqdm(range(number_of_simulation)):
         # for the distribution of time request across all 63 provinces
         # in each hour, I will do a subset of 60 provinces from the list of 63
         start_time = datetime.now()
-        # main simulation
-        # 2 provinces for each run
-        # this is the first one
-        first_prov = simulate_list.pop()
-        final_drive_res, final_request_time, gps_str, harv_dist_str = sth(first_prov, province_bounds, stroke_facs)
-        end_first = datetime.now()
-        cost_first = (start_time - end_first).microseconds
-        record_result((start_time, gps_str, first_prov, final_drive_res, harv_dist_str, final_request_time, cost_first))
+        for idx in range(6):
+            # if the list run out of candidate to use, recreate the list
+            if len(simulate_list) == 0:
+                simulate_list = province_list + np.random.choice(province_list, 57)
+                np.random.shuffle(simulate_list)
 
-        # second province in the minute
-        start_sec = datetime.now()
-        sec_prov = simulate_list.pop()
-        final_drive_res, final_request_time, gps_str, harv_dist_str = sth(sec_prov, province_bounds, stroke_facs)
-        end_sec = datetime.now()
-        cost_sec = (start_sec - end_sec).microseconds
-        record_result((start_time, gps_str, first_prov, final_drive_res, harv_dist_str, final_request_time, cost_sec))
+            start_each = datetime.today()
+            # main simulation
+            # 2 provinces for each run
+            # this is the first one
+            first_prov = simulate_list.pop()
+            final_drive_res, final_request_time, gps_str, harv_dist_str = sth(first_prov, province_bounds, stroke_facs)
+            end_first = datetime.now()
+            cost_first = round((start_each - end_first).microseconds / 1000, 2)
+            record_result((start_each, gps_str, first_prov,
+                           final_drive_res, harv_dist_str, final_request_time, cost_first))
 
-        # if the list run out of candidate to use, recreate the list
-        if len(simulate_list) == 0:
-            simulate_list = province_list + np.random.choice(province_list, 57)
-            np.random.shuffle(simulate_list)
         end_time = datetime.now()
         # cost time is used to control if we have reached the maximum request per minute set out by MapBox or not
         cost_time = (end_time - start_time).total_seconds()
@@ -215,26 +210,34 @@ def main():
 
 if __name__ == '__main__':
     # HERE LIES MY UNIT TEST
-    file_name = './Data/gadm_vietnam.geojson'
-    edges = gpd.read_file(file_name, driver='GeoJSON')
-    temp = edges.iloc[0]
-
-    start = datetime.now()
-    temp = random_gps(temp["geometry"])
-    end = datetime.now()
-    print((end - start).microseconds)
-
-    stroke_facs = pd.read_csv('./Data/stroke_facs_latest.csv')
-    stroke_facs = deepcopy(stroke_facs[['Name_English', 'longitude', 'latitude', 'pro_name_e', 'dist_name_e']])
-    stroke_facs.columns = ['Facility_Name', 'Lon', 'Lat', 'Province', 'District']
-
-    start = datetime.now()
-    temp = return_closest_45(temp[0], temp[1], stroke_facs)
-    end = datetime.now()
-    print((end - start).microseconds)
+    # file_name = './Data/gadm_vietnam.geojson'
+    # edges = gpd.read_file(file_name, driver='GeoJSON')
+    # temp = edges.iloc[0]
+    #
+    # # start = datetime.now()
+    # # temp = random_gps(temp["geometry"])
+    # # end = datetime.now()
+    # # print((end - start).microseconds)
+    #
+    # stroke_facs = pd.read_csv('./Data/stroke_facs_latest.csv')
+    # stroke_facs = deepcopy(stroke_facs[['Name_English', 'longitude', 'latitude', 'pro_name_e', 'dist_name_e']])
+    # stroke_facs.columns = ['Facility_Name', 'Lon', 'Lat', 'Province', 'District']
+    #
+    # start = datetime.today()
+    # print(start)
+    # temp = return_closest_45(temp[0], temp[1], stroke_facs)
+    # end = datetime.now()
+    # print((end - start).microseconds)
     # temp = travel_time_req(-122.42, 37.78, [[-122.45, 37.91], [-122.48, 37.73]])
-    temp, a, b, c = sth('VNM.1_1', edges[['GID_1', 'NAME_1', 'geometry']], stroke_facs)
-    print(temp, a, b, c)
-    pass
+
+    # start = datetime.now()
+    # temp, a, b, c = sth('VNM.8_1', edges[['GID_1', 'NAME_1', 'geometry']], stroke_facs)
+    # end = datetime.now()
+    # print((end - start))
+    # print(temp)
+    # print(a)
+    # print(b)
+    # print(c)
+    # pass
     # AND HERE IS THE MAIN SIMULATION
-    # main()
+    main()
