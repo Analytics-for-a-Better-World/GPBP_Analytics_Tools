@@ -34,11 +34,10 @@ def random_gps(bounds: Polygon):
 def open_connection():
     mydb = connect(
         # fixed to connect to db server here
-        host="192.168.1.93",
-        port="3306",
-        user="wbg",
+        host="localhost",
+        user="nyfed",
         password="Test@123",
-        database='gbpb'
+        database='GPBP'
     )
     return mydb
 
@@ -58,8 +57,12 @@ def travel_time_req(source_lon, source_lat, to_list):
     request_params = """?annotations=duration&sources=0&access_token="""
     request_mapbox_driving = request_url + coordinate_str + request_params + token
     try:
-        request_pack = requests.get(request_mapbox_driving)
-        duration_minutes = json.loads(request_pack.content)['durations'][0][1:]
+        request_pack = json.loads(requests.get(request_mapbox_driving).content)
+        if 'messsage' in request_pack.keys():
+            if request_pack['durations'] == "Too Many Requests":
+                print('Use too many at ' + str(datetime.today()))
+                return False
+        duration_minutes = request_pack['durations'][0][1:]
         return duration_minutes
     except Exception as e:
         print(e)
@@ -205,7 +208,7 @@ def main():
         # cost time is used to control if we have reached the maximum request per minute set out by MapBox or not
         cost_time = (end_time - start_time).total_seconds()
         if cost_time < 60:
-            time.sleep(cost_time)
+            time.sleep(60 - cost_time)
     return
 
 
