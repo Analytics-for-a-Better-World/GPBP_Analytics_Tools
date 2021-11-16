@@ -21,6 +21,8 @@ def random_gps(bounds: Polygon):
     """
     inside_poly = False
     min_lon, min_lat, max_lon, max_lat = bounds.bounds
+    # I understand this randomization process is very inefficient, but ...
+    # deadline is more important, so I will leave this to whoever is better to solve it for me
     while not inside_poly:
         new_lon = round(np.random.uniform(min_lon, max_lon), 5)
         new_lat = round(np.random.uniform(min_lat, max_lat), 5)
@@ -32,6 +34,10 @@ def random_gps(bounds: Polygon):
 
 
 def open_connection():
+    """
+    Create connection to MySQL DB
+    :return: MySQL connector object
+    """
     mydb = connect(
         # fixed to connect to db server here
         host="localhost",
@@ -43,6 +49,13 @@ def open_connection():
 
 
 def travel_time_req(source_lon, source_lat, to_list):
+    """
+    Request Mapbox API to calculate drive-time from a source point to list of facilities
+    :param source_lon: source's longitude
+    :param source_lat: source's latitude
+    :param to_list: list of coordinates from different facilities
+    :return: a list driving-time with index corresponding to the order of facilities in the original to_list
+    """
     # the coordinate pair come in the form of: (longitude. latitude)
     coordinate_str = str(source_lon) + ',' + str(source_lat)
     for destination in to_list:
@@ -167,6 +180,10 @@ def sth(prov_name, prov_df: pd.DataFrame, facs_df: pd.DataFrame):
 
 
 def main():
+    """
+    Main simulation function
+    :return: None
+    """
     file_name = './Data/gadm_vietnam.geojson'
     province_bounds = gpd.read_file(file_name, driver='GeoJSON')
     province_bounds = deepcopy(province_bounds[['GID_1', 'NAME_1', 'geometry']])
@@ -180,7 +197,6 @@ def main():
     # I can send 30 requests with 9 stroke centres each request
     # thus, for each minute, I can simulate 6 GPS points at the same time
     # (roughly, since I will not try to do multithreading, it will all be sequential request)
-    temp = np.random.choice(province_list, 57).tolist()
     simulate_list = province_list + np.random.choice(province_list, 57).tolist()
     np.random.shuffle(simulate_list)
     for _ in tqdm(range(number_of_simulation)):
