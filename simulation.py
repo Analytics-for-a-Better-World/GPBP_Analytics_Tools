@@ -206,7 +206,7 @@ def main():
         for idx in range(6):
             # if the list run out of candidate to use, recreate the list
             if len(simulate_list) == 0:
-                simulate_list = province_list + np.random.choice(province_list, 57)
+                simulate_list = province_list + np.random.choice(province_list, 57).tolist()
                 np.random.shuffle(simulate_list)
 
             start_each = datetime.today()
