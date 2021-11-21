@@ -187,7 +187,7 @@ def simulation_core(coord_pair, remain_time, req_count, facs_df: pd.DataFrame,
             # here is to capture the case of failed connection
             # and limited access from Mapbox API
             if queried_res:
-                remain_time = max(remain_time-cost_time, 0)
+                remain_time = max(remain_time - cost_time, 0)
                 break
             else:
                 time.sleep(remain_time)
@@ -214,7 +214,7 @@ def main():
     number_of_simulation = coord_df.shape[0]
 
     req_count = 0
-    curr_cost = 0
+    remain_time = 60
     # I can send 30 requests with 9 stroke centres each request
     # thus, for each minute, I can simulate 6 GPS points at the same time
     # roughly, since I will not try to do multithreading,
@@ -222,23 +222,25 @@ def main():
     for idx in tqdm(range(number_of_simulation)):
         curr_pair = coord_df.iloc[idx, :]
         time_of_req = datetime.today()
-        min_drive, req_count, curr_cost = simulation_core(curr_pair,
-                                                          curr_cost,
-                                                          req_count,
-                                                          stroke_facs,
-                                                          48)
+        min_drive, req_count, remain_time = simulation_core(curr_pair,
+                                                            remain_time,
+                                                            req_count,
+                                                            stroke_facs,
+                                                            48)
         start_time = datetime.now()
         source_point = str(curr_pair[0]) + ',' + str(curr_pair[1])
-        record_result((time_of_req, source_point, str(min_drive)))
+        # record_result((time_of_req, source_point, str(min_drive)))
         end_time = datetime.now()
         # cost time is used to control if we have reached the
         # maximum request per minute set out by MapBox or not
-        curr_cost += (end_time - start_time).total_seconds()
-        if curr_cost >= 60 and req_count <= max_req_min:
-            curr_cost = curr_cost - 60
+        remain_time -= (end_time - start_time).total_seconds()
+        if remain_time <= 0 and req_count <= max_req_min:
+            remain_time = 60
             req_count = 0
-        elif req_count >= max_req_min and curr_cost < 60:
-            time.sleep(60 - curr_cost)
+        elif req_count >= max_req_min and remain_time < 60:
+            time.sleep(remain_time)
+            req_count = 0
+            remain_time = 60
     return
 
 
