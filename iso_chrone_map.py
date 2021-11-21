@@ -229,7 +229,7 @@ def main():
                                                           48)
         start_time = datetime.now()
         source_point = str(curr_pair[0]) + ',' + str(curr_pair[1])
-        record_result((time_of_req, source_point, str(min_drive)))
+        # record_result((time_of_req, source_point, str(min_drive)))
         end_time = datetime.now()
         # cost time is used to control if we have reached the
         # maximum request per minute set out by MapBox or not
@@ -280,7 +280,7 @@ if __name__ == '__main__':
     # print(c)
     # pass
     # AND HERE IS THE MAIN SIMULATION
-    vn_prov = gpd.read_file('./Data/gadm_vietnam.geojson')
-    vn_bound = vn_prov.geometry.unary_union
-    random_gps(vn_bound)
-    # main()
+    # vn_prov = gpd.read_file('./Data/gadm_vietnam.geojson')
+    # vn_bound = vn_prov.geometry.unary_union
+    # random_gps(vn_bound)
+    main()
