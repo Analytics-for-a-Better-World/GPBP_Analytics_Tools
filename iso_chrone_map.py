@@ -190,9 +190,9 @@ def simulation_core(coord_pair, remain_time, req_count, facs_df: pd.DataFrame,
                 remain_time -= cost_time
                 break
             else:
+                time.sleep(remain_time)
                 remain_time = 60
                 req_count = 0
-                time.sleep(remain_time)
         # add to list
         final_drive_res += queried_res
     # remove unnecessary comma and data prep before returning result
