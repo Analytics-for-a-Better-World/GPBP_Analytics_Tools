@@ -187,7 +187,7 @@ def simulation_core(coord_pair, remain_time, req_count, facs_df: pd.DataFrame,
             # here is to capture the case of failed connection
             # and limited access from Mapbox API
             if queried_res:
-                remain_time -= cost_time
+                remain_time = max(remain_time-cost_time, 0)
                 break
             else:
                 time.sleep(remain_time)
@@ -221,7 +221,7 @@ def main():
     # it will all be sequential request
     for idx in tqdm(range(number_of_simulation)):
         curr_pair = coord_df.iloc[idx, :]
-        time_of_req = datetime.now()
+        time_of_req = datetime.today()
         min_drive, req_count, curr_cost = simulation_core(curr_pair,
                                                           curr_cost,
                                                           req_count,
