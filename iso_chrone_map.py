@@ -111,7 +111,7 @@ def record_result(res_list: tuple):
     """
     mydb = open_connection()
     cursor = mydb.cursor()
-    insert_query = """  INSERT INTO gpbp(req_time, source_point, min_drive) 
+    insert_query = """  INSERT INTO isochrone(req_time, source_point, min_drive) 
                         VALUES(%s ,%s ,%s)"""
     cursor.execute(insert_query, res_list)
     mydb.commit()
