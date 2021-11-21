@@ -6,15 +6,12 @@ import geopandas as gpd
 from shapely.ops import cascaded_union
 from shapely import wkt
 
-
 vn_prov = gpd.read_file('./Data/gadm_vietnam.geojson')
 vn_bound = vn_prov.geometry.unary_union
 time_frame = [20, 40, 60, 90, 120, 150, 180, 210, 240, 300, 360]
 
-def iso_req(coor_pair: str, req_min: int):
-    """
 
-    """
+def iso_req(coor_pair: str, req_min: int):
     # 300 requests per minute
     token = """pk.eyJ1IjoicGFydmF0aHlrcmlzaG5hbmsiLCJhIjoiY2tybGFoMTZwMGJjdDJybnYyemwxY3QxMSJ9.FXaVYsMF3HIzw7ZQFQPhSw"""
     request_url = """https://api.mapbox.com/isochrone/v1/mapbox/driving/"""
@@ -36,22 +33,22 @@ def iso_req(coor_pair: str, req_min: int):
 def in_vn_check(poly: Polygon):
     if vn_bound.contains(poly):
         return poly
-    else:
-        return vn_bound.intersection(poly)
+    return vn_bound.intersection(poly)
 
 
 if __name__ == '__main__':
-    # hosp_1 = iso_req('105.496,21.117', 60)
-    # hosp_2 = iso_req('105.790, 21.051', 60)
-    # polygons = [hosp_1, hosp_2]
-    # boundary = cascaded_union(polygons)
-    # if isinstance(boundary, MultiPolygon):
-    #     boundaries = list(boundary.geoms)
-    # # this is for rounding
-    # boundary = wkt.loads(wkt.dumps(boundary, rounding_precision=2))
-    # # this is for taking the exterior coordinate
-    # x, y = boundary.exterior.xy
-    # new_group = list(set(zip(x, y)))
-    # # this is for taking the interiors' coordinate
-    # temp = [x.coords for x in boundary.interiors]
+    a = 1
+    hosp_1 = iso_req('105.496,21.117', 60)
+    hosp_2 = iso_req('105.790, 21.051', 60)
+    polygons = [hosp_1, hosp_2]
+    boundary = cascaded_union(polygons)
+    if isinstance(boundary, MultiPolygon):
+        boundaries = list(boundary.geoms)
+    # this is for rounding
+    boundary = wkt.loads(wkt.dumps(boundary, rounding_precision=2))
+    # this is for taking the exterior coordinate
+    x, y = boundary.exterior.xy
+    new_group = list(set(zip(x, y)))
+    # this is for taking the interiors' coordinate
+    temp = [x.coords for x in boundary.interiors]
     pass

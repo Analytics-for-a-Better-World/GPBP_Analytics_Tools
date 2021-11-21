@@ -253,8 +253,8 @@ def main():
 
 if __name__ == '__main__':
     # HERE LIES MY UNIT TEST
-    # file_name = './Data/gadm_vietnam.geojson'
-    # edges = gpd.read_file(file_name, driver='GeoJSON')
+    file_name = './Data/gadm_vietnam.geojson'
+    edges = gpd.read_file(file_name, driver='GeoJSON')
     # temp = edges.iloc[0]
     #
     # # start = datetime.now()
@@ -262,12 +262,12 @@ if __name__ == '__main__':
     # # end = datetime.now()
     # # print((end - start).microseconds)
     #
-    # stroke_facs = pd.read_csv('./Data/stroke_facs_latest.csv')
-    # stroke_facs = deepcopy(stroke_facs[['Name_English', 'longitude',
-    #                                     'latitude',
-    #                                     'pro_name_e', 'dist_name_e']])
-    # stroke_facs.columns = ['Facility_Name', 'Lon', 'Lat',
-    #                        'Province', 'District']
+    stroke_facs = pd.read_csv('./Data/stroke_facs_latest.csv')
+    stroke_facs = deepcopy(stroke_facs[['Name_English', 'longitude',
+                                        'latitude',
+                                        'pro_name_e', 'dist_name_e']])
+    stroke_facs.columns = ['Facility_Name', 'Lon', 'Lat',
+                           'Province', 'District']
     #
     # start = datetime.today()
     # print(start)
@@ -278,9 +278,9 @@ if __name__ == '__main__':
     #                        [[-122.45, 37.91], [-122.48, 37.73]])
 
     # start = datetime.now()
-    # temp, a, b, c = sth('VNM.8_1',
-    #                     edges[['GID_1', 'NAME_1', 'geometry']],
-    #                     stroke_facs)
+    temp, a, b, c = sth('VNM.8_1',
+                        edges[['GID_1', 'NAME_1', 'geometry']],
+                        stroke_facs)
     # end = datetime.now()
     # print((end - start))
     # print(temp)
