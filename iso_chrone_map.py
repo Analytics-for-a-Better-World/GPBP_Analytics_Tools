@@ -194,6 +194,7 @@ def simulation_core(coord_pair, remain_time, req_count, facs_df: pd.DataFrame,
                 remain_time = 60
                 req_count = 0
         # add to list
+        queried_res = [np.Inf if x == 'None' else x for x in queried_res]
         final_drive_res += queried_res
     # remove unnecessary comma and data prep before returning result
     min_drive = min(final_drive_res)
@@ -207,6 +208,7 @@ def main():
     :return: None
     """
     coord_df = pd.read_csv('./Data/iso_chrone.csv')
+    coord_df = deepcopy(coord_df[:14216, :])
     stroke_facs = pd.read_csv('./Data/stroke_facs_latest.csv')
     stroke_facs = deepcopy(stroke_facs[['Name_English',
                                         'longitude', 'latitude']])
