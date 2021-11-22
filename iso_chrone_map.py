@@ -111,8 +111,16 @@ def record_result(res_list: tuple):
     """
     mydb = open_connection()
     cursor = mydb.cursor()
-    insert_query = """  INSERT INTO isochrone(req_time, source_point, min_drive) 
-                        VALUES(%s ,%s ,%s)"""
+    min_drive = res_list[-1]
+    if isinstance(min_drive, float):
+        insert_query = """INSERT INTO 
+                                isochrone(req_time, source_point, min_drive) 
+                          VALUES
+                                (%s ,%s ,%s)"""
+    else:
+        insert_query = """INSERT INTO isochrone(req_time, source_point) 
+                          VALUES(%s ,%s)"""
+        res_list = res_list[:2]
     cursor.execute(insert_query, res_list)
     mydb.commit()
     cursor.close()
