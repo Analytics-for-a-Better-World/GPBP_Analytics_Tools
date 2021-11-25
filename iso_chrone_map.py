@@ -216,7 +216,7 @@ def main():
     :return: None
     """
     coord_df = pd.read_csv('./Data/iso_chrone.csv')
-    coord_df = deepcopy(coord_df.iloc[14216:, :])
+    coord_df = deepcopy(coord_df.iloc[14216:, :]).reset_index(drop=True)
     stroke_facs = pd.read_csv('./Data/stroke_facs_latest.csv')
     stroke_facs = deepcopy(stroke_facs[['Name_English',
                                         'longitude', 'latitude']])
