@@ -85,6 +85,7 @@ def travel_time_req(source_lon, source_lat, to_list):
     request_mapbox = request_url + coordinate_str + request_params + token
     try:
         request_pack = json.loads(requests.get(request_mapbox).content)
+        print(request_pack)
         if 'messsage' in request_pack.keys():
             if request_pack['durations'] == "Too Many Requests":
                 print('Use too many at ' + str(datetime.today()))
@@ -172,7 +173,8 @@ def simulation_core(coord_pair, remain_time, req_count, facs_df: pd.DataFrame,
     """
     start_time = datetime.now()
     gps_lon, gps_lat = coord_pair
-
+    gps_lon = 103.5
+    gps_lat = 21.57
     # data preparation for the facilities list
     facs_df_45 = return_closest_facs(gps_lon, gps_lat, facs_df, facs_return)
     facs_list = facs_df_45[['Lon', 'Lat']].to_numpy().tolist()
