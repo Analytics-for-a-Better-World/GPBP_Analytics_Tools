@@ -20,8 +20,8 @@ def open_connection():
     mydb = connect(
         # fixed to connect to db server here
         host="localhost",
-        user="nyfed",
-        password="Test@123",
+        user="root",
+        password="Ahihi@123",
         database='GPBP'
     )
     return mydb
@@ -51,26 +51,26 @@ def record_result(res_list: tuple):
     return
 
 
-daily_df = pd.read_csv('./Data/CHIRPS/Raw/daily/chirps-v2.0.2021.10.01.csv')
-daily_df.columns = ['Lon', 'Lat', 'mm']
-daily_df = daily_df.round(3)
-check_df = pd.read_csv('./Data/CHIRPS/chirps_vn_data_daily.csv')
-idx_list = []
-for i in tqdm(range(check_df.shape[0])):
-    cur_lon = round(check_df['Lon'][i], 3)
-    cur_lat = round(check_df['Lat'][i], 3)
-    idx = daily_df.where(
-        (daily_df['Lon'] == cur_lon) & (
-                daily_df['Lat'] == cur_lat)).dropna().index
-    if len(idx) >= 1:
-        idx_list.append(idx[0])
-    else:
-        print(cur_lon, cur_lat)
-
-check_df = check_df[['Lon', 'Lat']]
-check_df['idx'] = idx_list
-check_df.to_csv('./Data/CHIRPS/chirps_daily_idx.csv', index=False)
-pass
+# daily_df = pd.read_csv('./Data/CHIRPS/Daily/Raw/chirps-v2.0.2021.10.01.csv')
+# daily_df.columns = ['Lon', 'Lat', 'mm']
+# daily_df = daily_df.round(3)
+# check_df = pd.read_csv('./Data/CHIRPS/chirps_vn_data_daily.csv')
+# idx_list = []
+# for i in tqdm(range(check_df.shape[0])):
+#     cur_lon = round(check_df['Lon'][i], 3)
+#     cur_lat = round(check_df['Lat'][i], 3)
+#     idx = daily_df.where(
+#         (daily_df['Lon'] == cur_lon) & (
+#                 daily_df['Lat'] == cur_lat)).dropna().index
+#     if len(idx) >= 1:
+#         idx_list.append(idx[0])
+#     else:
+#         print(cur_lon, cur_lat)
+#
+# check_df = check_df[['Lon', 'Lat']]
+# check_df['idx'] = idx_list
+# check_df.to_csv('./Data/CHIRPS/chirps_daily_idx.csv', index=False)
+# pass
 
 yrs_list = [str(int(x)) for x in np.arange(1981, 2022, 1)]
 
@@ -89,15 +89,17 @@ def listFD(url, ext=''):
             node.get('href').endswith(ext)]
 
 
-url = 'https://data.chc.ucsb.edu/products/CHIRPS-2.0/global_daily/tifs/p25/'
+url = 'https://data.chc.ucsb.edu/products/CHIRPS-2.0/global_daily/tifs/p05/'
 ext = '.gz'
 list_df = pd.read_csv('./Data/CHIRPS/chirps_daily_idx.csv')
 idx_list = list_df['idx'].to_numpy()
-for yr in yrs_list:
-    check_urls = listFD(url, ext)
+for yr in tqdm(yrs_list):
+    check_url = url + yr + '/'
+    check_urls = listFD(check_url, ext)
     for files in check_urls:
         with open('./Data/CHIRPS/tmp/tmp.tif.gz', 'wb') as out_file:
-            content = requests.get(files, stream=True).content
+            content = requests.get(check_url + files, stream=True).content
+            out_file.write(content)
 
         with gzip.open('./Data/CHIRPS/tmp/tmp.tif.gz', 'rb') as f_in:
             with open('./Data/CHIRPS/tmp/tmp.tif', 'wb') as f_out:
@@ -109,8 +111,8 @@ for yr in yrs_list:
 
         check_df = pd.read_csv('./Data/CHIRPS/tmp/tmp.csv')
         check_df.columns = ['Lon', 'Lat', 'mm']
-        check_df = check_df[idx_list]
-        max_rain = max(check_df['mm'].to_numpy())
+        check_df = check_df.loc[idx_list, ['mm']]
+        max_rain = max(check_df.to_numpy().tolist())
         time_frame = files.split('/')[0]
         time_frame = '-'.join(time_frame.split('.')[-5:-2]).strip()
-        record_result((max_rain, time_frame,))
+        record_result((max_rain[0], time_frame,))
