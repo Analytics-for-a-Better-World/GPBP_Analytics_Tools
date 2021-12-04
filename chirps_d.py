@@ -21,8 +21,8 @@ def open_connection():
         # fixed to connect to db server here
         host="localhost",
         user="root",
-        password="Ahihi@123",
-        database='GPBP'
+        password="Ahihi123",
+        database='gpbp'
     )
     return mydb
 
@@ -89,30 +89,47 @@ def listFD(url, ext=''):
             node.get('href').endswith(ext)]
 
 
+def check_time(timeframe):
+    mydb = open_connection()
+    cursor = mydb.cursor()
+    insert_query = """select count(*)
+                     from chirps_d where timeframe = %s"""
+    cursor.execute(insert_query, (timeframe,))
+    check_num = cursor.fetchone()
+    mydb.commit()
+    cursor.close()
+    mydb.close()
+    return check_num[0]
+
+
 url = 'https://data.chc.ucsb.edu/products/CHIRPS-2.0/global_daily/tifs/p05/'
 ext = '.gz'
+root_dir = 'D:/tmp/'
 list_df = pd.read_csv('./Data/CHIRPS/chirps_daily_idx.csv')
 idx_list = list_df['idx'].to_numpy()
 for yr in tqdm(yrs_list):
     check_url = url + yr + '/'
     check_urls = listFD(check_url, ext)
-    for files in check_urls:
-        with open('./Data/CHIRPS/tmp/tmp.tif.gz', 'wb') as out_file:
+    for files in tqdm(check_urls):
+        time_frame = files.split('/')[0]
+        time_frame = '-'.join(time_frame.split('.')[-5:-2]).strip()
+        temp = check_time(time_frame)
+        if temp == 1:
+            continue
+        with open(root_dir + 'tmp.tif.gz', 'wb') as out_file:
             content = requests.get(check_url + files, stream=True).content
             out_file.write(content)
 
-        with gzip.open('./Data/CHIRPS/tmp/tmp.tif.gz', 'rb') as f_in:
-            with open('./Data/CHIRPS/tmp/tmp.tif', 'wb') as f_out:
+        with gzip.open(root_dir + 'tmp.tif.gz', 'rb') as f_in:
+            with open(root_dir + 'tmp.tif', 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
 
         rtxyz = Raster2xyz()
-        rtxyz.translate('./Data/CHIRPS/tmp/tmp.tif',
-                        './Data/CHIRPS/tmp/tmp.csv')
+        rtxyz.translate(root_dir + 'tmp.tif',
+                        root_dir + 'tmp.csv')
 
-        check_df = pd.read_csv('./Data/CHIRPS/tmp/tmp.csv')
+        check_df = pd.read_csv(root_dir + 'tmp.csv')
         check_df.columns = ['Lon', 'Lat', 'mm']
         check_df = check_df.loc[idx_list, ['mm']]
         max_rain = max(check_df.to_numpy().tolist())
-        time_frame = files.split('/')[0]
-        time_frame = '-'.join(time_frame.split('.')[-5:-2]).strip()
         record_result((max_rain[0], time_frame,))

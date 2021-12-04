@@ -54,30 +54,28 @@ import math
 
 import numpy as np
 
-from tqdm import tqdm
-
-file_dir = "./Data/CHIRPS/Raw/daily/"
-
-file_names = os.listdir(file_dir)
-chirps_df = pd.DataFrame()
-for csv_file in tqdm(file_names):
-    if '.csv' not in csv_file:
-        continue
-    new_df = pd.read_csv(file_dir + csv_file)
-    year, month, day = csv_file.split('.')[2:5]
-    new_df.columns = ['Lon', 'Lat', str(day) + '-' + str(month)+'-'+str(year)]
-
-    # because CHIRPS is in quasi-global format
-    # we need to transform it back to normal format
-#     new_df['Lat'] = np.multiply(new_df['Lat'], 3.6)
-    if chirps_df.shape[0] == 0:
-        chirps_df = new_df
-    else:
-        chirps_df = chirps_df.merge(new_df,
-                                    how='outer',
-                                    on=['Lat', 'Lon'])
-chirps_df.to_csv("./Data/CHIRPS/chirps_full_data_daily.csv", index=False)
-
+# from tqdm import tqdm
+#
+# file_dir = "./Data/CHIRPS/Raw/"
+# file_names = os.listdir(file_dir)
+# chirps_df = pd.DataFrame()
+# for csv_file in tqdm(file_names):
+#     if '.csv' not in csv_file:
+#         continue
+#     new_df = pd.read_csv(file_dir + csv_file)
+#     year, month = csv_file.split('.')[2:4]
+#     new_df.columns = ['Lon', 'Lat', str(month)+'-'+str(year)]
+#
+#     # because CHIRPS is in quasi-global format
+#     # we need to transform it back to normal format
+# #     new_df['Lat'] = np.multiply(new_df['Lat'], 3.6)
+#     if chirps_df.shape[0] == 0:
+#         chirps_df = new_df
+#     else:
+#         chirps_df = chirps_df.merge(new_df,
+#                                     how='outer',
+#                                     on=['Lat', 'Lon'])
+# chirps_df.to_csv("./Data/CHIRPS/chirps_full_data.csv", index=False)
 # chirps_df = pd.read_csv("./Data/CHIRPS/chirps_full_data.csv")
 # new_df = pd.read_csv("./Data/CHIRPS/Raw/chirps-v2.0.2019.09.csv")
 # year, month = ['2019', '09']
@@ -86,33 +84,37 @@ chirps_df.to_csv("./Data/CHIRPS/chirps_full_data_daily.csv", index=False)
 #                             how='outer',
 #                             on=['Lat', 'Lon'])
 # chirps_df.to_csv("./Data/CHIRPS/chirps_full_data.csv", index=False)
-
+# chirps_df.to_csv("./Data/CHIRPS/chirps_full_data.csv", index=False)
 import geopandas as gpd
-
-vn_prov = gpd.read_file('./Data/gadm_vietnam.geojson')
-vn_bound = vn_prov.geometry.unary_union
-# chirps_df = pd.read_csv('./Data/CHIRPS/chirps_full_data.csv')
-
-min_lon, min_lat, max_lon, max_lat = vn_bound.bounds
-chirps_df = chirps_df.where(chirps_df['Lon'] < max_lon).dropna()
-chirps_df.reset_index(inplace=True, drop=True)
-chirps_df = chirps_df.where(chirps_df['Lon'] > min_lon).dropna()
-chirps_df.reset_index(inplace=True, drop=True)
-chirps_df = chirps_df.where(chirps_df['Lat'] < max_lat).dropna()
-chirps_df.reset_index(inplace=True, drop=True)
-chirps_df = chirps_df.where(chirps_df['Lat'] > min_lat).dropna()
-chirps_df.reset_index(inplace=True, drop=True)
-
+from geopandas import GeoDataFrame
 from shapely.geometry import Point
+import matplotlib.pyplot as plt
+from tqdm import tqdm
 
-drop_list = []
-for idx in tqdm(range(chirps_df.shape[0])):
-    new_lon = chirps_df["Lon"][idx]
-    new_lat = chirps_df["Lat"][idx]
-    cur_point = Point(new_lon, new_lat)
-    if not vn_bound.contains(cur_point):
-        drop_list.append(idx)
-chirps_df.drop(drop_list, inplace=True)
-chirps_df.to_csv("./Data/CHIRPS/chirps_vn_data_daily.csv",
-                 index=False)
+# vn_prov = gpd.read_file('./Data/gadm_vietnam.geojson')
+# vn_bound = vn_prov.geometry.unary_union
+# chirps_df = pd.read_csv('./Data/CHIRPS/chirps_full_data.csv')
+#
+# min_lon, min_lat, max_lon, max_lat = vn_bound.bounds
+# chirps_df = chirps_df.where(chirps_df['Lon'] < max_lon).dropna()
+# chirps_df.reset_index(inplace=True, drop=True)
+# chirps_df = chirps_df.where(chirps_df['Lon'] > min_lon).dropna()
+# chirps_df.reset_index(inplace=True, drop=True)
+# chirps_df = chirps_df.where(chirps_df['Lat'] < max_lat).dropna()
+# chirps_df.reset_index(inplace=True, drop=True)
+# chirps_df = chirps_df.where(chirps_df['Lat'] > min_lat).dropna()
+# chirps_df.reset_index(inplace=True, drop=True)
+#
+# from shapely.geometry import Point
+#
+# drop_list = []
+# for idx in range(chirps_df.shape[0]):
+#     new_lon = chirps_df["Lon"][idx]
+#     new_lat = chirps_df["Lat"][idx]
+#     cur_point = Point(new_lon, new_lat)
+#     if not vn_bound.contains(cur_point):
+#         drop_list.append(idx)
+# chirps_df.drop(drop_list, inplace=True)
+# chirps_df.to_csv("./Data/CHIRPS/chirps_vn_data.csv",
+#                  index=False)
 pass
