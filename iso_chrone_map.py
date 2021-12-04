@@ -10,7 +10,6 @@ import math
 import time
 from copy import deepcopy
 from tqdm import tqdm
-from Scripts.haversine_vectorize import haversine_vectorize
 
 # API tính drive-time trong thời gian bình thường của Mapbox cho phép người dùng request
 # tối đa là 25 cặp toạ độ cùng 1 lúc với tối đa là 60 một phút
@@ -69,6 +68,19 @@ def random_gps(bounds: MultiPolygon, sq_size=0.01):
     # Lưu file csv
     res_df.to_csv('./Data/iso_chrone.csv', index=False)
     return
+
+
+def haversine_vectorize(lon1, lat1, lon2, lat2):
+    import numpy as np
+
+    lon1, lat1, lon2, lat2 = map(np.radians, [lon1, lat1, lon2, lat2])
+    newlon = lon2 - lon1
+    newlat = lat2 - lat1
+    haver_formula = np.sin(newlat / 2.0) ** 2 + np.cos(lat1) * np.cos(
+        lat2) * np.sin(newlon / 2.0) ** 2
+    dist = 2 * np.arcsin(np.sqrt(haver_formula))
+    km = 6367 * dist  # 6367 for distance in KM for miles use 3958
+    return round(km, 2)
 
 
 def open_connection():
@@ -301,8 +313,8 @@ def main():
     # ví dụ: muốn tìm các TTYT nằm trong 1 khoảng kinh độ và vĩ độ thì sẽ sử dụng and
     # dest_facs = dest_facs.where((dest_facs['Lon'] <= 123) and (dest_facs['Lon'] >= 120)).dropna()
     # còn muốn tìm các TTYT thuộc 1 danh sách các tỉnh thì sẽ sử dụng or
-    # dest_facs = dest_facs.where((dest_facs['Province'] == 'Ha Noi') and (dest_facs['Province'] == 'Bac Ninh')).dropna()
-    
+    # dest_facs = dest_facs.where((dest_facs['Province'] == 'Ha Noi') and (dest_facs['Province']=='Bac Ninh')).dropna()
+
     number_of_simulation = source_df.shape[0]
     req_count = 0
     remain_time = 60
@@ -324,7 +336,7 @@ def main():
                                                             req_count,
                                                             dest_facs,
                                                             req_facs_num)
-        
+
         start_time = datetime.now()
         source_point = str(curr_pair[0]) + ',' + str(curr_pair[1])
         # sau đó ghi giá trị lại
