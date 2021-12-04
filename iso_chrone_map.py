@@ -196,14 +196,15 @@ def return_closest_facs(source_lon, source_lat, facs_df, facs_return):
     return res_df.iloc[cut_off:facs_return, :]
 
 
-def simulation_core(coord_pair, remain_time, req_count, facs_df: pd.DataFrame,
-                    facs_return):
+def simulation_core(coord_pair, remain_time, req_count, curr_total,
+                    facs_df: pd.DataFrame, facs_return):
     """
     Hàm sắp xếp công việc so sánh khoảng cách và yêu cầu tính toán 
     thời gian di chuyển giữa 2 khu vực khác nhau
     :param coord_pair: cặp toạ độ của điểm gốc có dạng (kinh độ, vĩ độ)
     :param remain_time: thời gian đã sử dụng từ lần reset bộ đếm gần nhất
     :param req_count: số request đã sử dụng từ lần reset bộ đếm gần nhất
+    :param curr_total:
     :param facs_df: bảng chứa các TTYT với toạ độ và tên
     :param facs_return: số lượng TTYT mà hệ thống sẽ trích xuất
     :return:
@@ -276,9 +277,12 @@ def simulation_core(coord_pair, remain_time, req_count, facs_df: pd.DataFrame,
         final_drive_res += queried_res
         # tăng số req_count để phản ánh việc request hoàn thành
         req_count += 1
+        curr_total += 1
+        if curr_total >= remain_req_month:
+            raise Exception('Vượt quá số lần request free hàng tháng. Hãy thay token key mới')
     # Lấy giá trị thấp nhất từ chuỗi thu thập được và trả về hàm khác
     min_drive = min(final_drive_res)
-    return min_drive, req_count, remain_time
+    return min_drive, req_count, curr_total, remain_time
 
 
 def main():
@@ -318,6 +322,7 @@ def main():
     number_of_simulation = source_df.shape[0]
     req_count = 0
     remain_time = 60
+    total_request = 0
     # giá trị này quyết định xem top N các TTYT được dùng để tìm thời gian
     # thay vì là phải tìm toàn bộ các TTYT có ở VN, để tiết kiệm chi phí/số lượt request
     # thay đổi giá trị này cho phù hợp với nhu cầu tính toán
@@ -331,11 +336,12 @@ def main():
         time_of_req = datetime.today()
         # chạy hàm simulation_core để truy xuất thời gian di chuyển gần nhất
         # cho điểm có toạ độ tại dòng idx của bảng source_df
-        min_drive, req_count, remain_time = simulation_core(curr_pair,
-                                                            remain_time,
-                                                            req_count,
-                                                            dest_facs,
-                                                            req_facs_num)
+        min_drive, req_count, total_request, remain_time = simulation_core(curr_pair,
+                                                                           remain_time,
+                                                                           req_count,
+                                                                           total_request,
+                                                                           dest_facs,
+                                                                           req_facs_num)
 
         start_time = datetime.now()
         source_point = str(curr_pair[0]) + ',' + str(curr_pair[1])
