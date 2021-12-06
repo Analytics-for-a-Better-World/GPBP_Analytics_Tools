@@ -36,7 +36,7 @@ def random_gps(bounds: gpd.GeoDataFrame, sq_size=0.01):
     """
     # tính số chữ số đằng sau dấu thập phân của kích thước hình vuông
     # để làm tròn toạ độ của đường bao
-    dec_level = round(np.log10(1 / sq_size))
+    dec_level = math.ceil(np.log10(1 / sq_size))
     # tách giá trị tối đa/tối thiểu của kinh độ và vĩ độ
     min_lon, min_lat, max_lon, max_lat = np.round(bounds.total_bounds, dec_level)
 
@@ -73,7 +73,7 @@ def random_gps(bounds: gpd.GeoDataFrame, sq_size=0.01):
     res_df = pd.DataFrame(coor_list)
     res_df.columns = ["Lon", "Lat", "Prov_Name"]
     # Lưu file csv
-    res_df.to_csv('./Data/iso_chrone.csv', index=False)
+    res_df.to_csv('./Data/iso_chrone_OOG.csv', index=False)
     return
 
 
@@ -135,7 +135,8 @@ def travel_time_req(source_lon, source_lat, to_list):
         # Mapbox sẽ giới hạn lại và trả về lỗi
         # các câu lệnh phía dưới dùng để ngăn việc thông tin lỗi của Mapbox làm hỏng dữ liệu
         # và làm hỏng hệ thống đang chạy
-        if 'messsage' in request_pack.keys():
+        if request_pack['code'] != 'Ok':
+            print(request_pack['message'])
             if request_pack['durations'] == "Too Many Requests":
                 print('Use too many at ' + str(datetime.today()))
                 return False
@@ -143,8 +144,7 @@ def travel_time_req(source_lon, source_lat, to_list):
         # chuỗi giá trị được cắt đi điểm đầu tiên vì giá trị này luôn = 0
         # (do là cả điểm đi và điểm đến đều là điểm gốc)
         duration_minutes = request_pack['durations'][0][1:]
-        drive_distance = request_pack['durations'][0][1:]
-        return duration_minutes, drive_distance
+        return duration_minutes
     except Exception as e:
         print(e)
         return False
@@ -164,9 +164,9 @@ def record_result(res_list: tuple, dest_type='DB'):
         mydb = open_connection()
         cursor = mydb.cursor()
         # Thay câu lệnh này với tên bảng, tên cột tương ứng trong bảng CSDL
-        insert_query = """INSERT INTO isochrone(req_time, source_lon, source_lat, min_drive, closest_fac, min_dist) 
-                        VALUES (%s ,%s, %s ,%s, %s, %s)"""
-        cursor.execute(insert_query, res_list)
+        insert_query = """INSERT INTO isochrone_oog(req_time, source_lon, source_lat, min_drive, closest_fac) 
+                        VALUES (%s ,%s, %s ,%s, %s)"""
+        cursor.executemany(insert_query, res_list)
         mydb.commit()
         cursor.close()
         mydb.close()
@@ -176,15 +176,15 @@ def record_result(res_list: tuple, dest_type='DB'):
         if not os.path.exists(file_name):
             with open(file_name, 'w', newline='') as file_db:
                 writer_object = writer(file_db)
-                writer_object.writerow(res_list)
+                writer_object.writerows(res_list)
         else:
             with open(file_name, 'a', newline='') as file_db:
                 writer_object = writer(file_db)
-                writer_object.writerow(res_list)
+                writer_object.writerows(res_list)
     return
 
 
-def return_closest_facs(source_lon, source_lat, facs_df, facs_return):
+def return_closest_facs(source_lon, source_lat, facs_df, facs_return, col=None, prop=None):
     """
     Trả danh sách top N các trung tâm y tế gần nhất theo khoảng cách haversine
     :param source_lon: kinh độ của điểm gốc
@@ -194,12 +194,15 @@ def return_closest_facs(source_lon, source_lat, facs_df, facs_return):
     :return:
     """
     # copy lại bảng để tránh ảnh hưởng bảng gốc và tạo biến giá trị template
-    res_df = deepcopy(facs_df)
+    if not col:
+        res_df = deepcopy(facs_df)
+    else:
+        res_df = deepcopy(facs_df.where(facs_df[col]==prop).dropna().reset_index(drop=True))
     harv_dist = np.zeros(res_df.shape[0], dtype=float)
     # lần lượt đi qua từng trung tâm y tế và tính khoảng cách haversine
     for i in range(len(harv_dist)):
-        dest_lon = res_df['Lon'].iloc[i]
-        dest_lat = res_df['Lat'].iloc[i]
+        dest_lon = float(res_df['Lon'].iloc[i])
+        dest_lat = float(res_df['Lat'].iloc[i])
         harv_dist[i] = haversine_vectorize(source_lon, source_lat, dest_lon,
                                            dest_lat)
     # lưu chuỗi giá trị vào bảng giá trị
@@ -216,7 +219,7 @@ def return_closest_facs(source_lon, source_lat, facs_df, facs_return):
 
 
 def simulation_core(coord_pair, remain_time, req_count, curr_total,
-                    facs_df: pd.DataFrame, facs_return):
+                    facs_df: pd.DataFrame, facs_return, col=None, filter_prop=None):
     """
     Hàm sắp xếp công việc so sánh khoảng cách và yêu cầu tính toán 
     thời gian di chuyển giữa 2 khu vực khác nhau
@@ -243,26 +246,34 @@ def simulation_core(coord_pair, remain_time, req_count, curr_total,
     start_time = datetime.now()
     # tách chuỗi toạ độ ra kinh độ và vĩ độ
     gps_lon, gps_lat = coord_pair
-    # sử dụng hàm return_closest_facs phía trên để trả ra danh sách các TTYT gần nhất
-    facs_df_45 = return_closest_facs(gps_lon, gps_lat, facs_df, facs_return)
+    
     # trích xuất chuỗi giá trị kinh độ và vĩ độ để request API Mapbox
-    facs_list = facs_df_45[['Lon', 'Lat']].to_numpy().tolist()
-
+    facs_list = []
+    facs_df_45 = pd.DataFrame()
+    if col and filter_prop:
+        for prop in filter_prop:
+            # sử dụng hàm return_closest_facs phía trên để trả ra danh sách các TTYT gần nhất
+            facs_df_temp = return_closest_facs(gps_lon, gps_lat, facs_df, facs_return, col, prop)
+            facs_df_45 = pd.concat([facs_df_45, facs_df_temp])
+            facs_list += facs_df_temp.loc[:, ['Lon', 'Lat']].astype(float).to_numpy().tolist()
+    else:
+        facs_list = return_closest_facs(gps_lon, gps_lat, facs_df, facs_return)
+    facs_return_total = len(facs_list)
+    facs_df_45.reset_index(inplace=True, drop=True)
     # chuẩn bị 1 số thông tin trước chạy vòng lặp
     final_drive_res = []
-    final_drive_dist = []
     # số toạ độ được sử dụng mỗi request sẽ bằng số toạ độ tối đa trừ 1
     # do là phải chừa 1 cặp toạ độ cho điểm gốc
     coord_per_req = max_coord_req - 1
     # số lần chạy vòng lặp sẽ bằng giá trị làm tròn lên của phép chia
     # giữa số TTYT cần trích xuất và số toạ độ dùng mỗi lần
-    num_req = math.ceil(facs_return / coord_per_req)
+    num_req = math.ceil(facs_return_total / coord_per_req)
 
     for i in range(num_req):
         # 2 biến start_idx và end_idx được sử dụng để ngắt danh sách TTYT thành các chuỗi
         # có size vừa với số toạ độ cho phép mỗi lần request lên Mapbox
         start_idx = i * coord_per_req
-        end_idx = min((i + 1) * coord_per_req, facs_return)
+        end_idx = min((i + 1) * coord_per_req, facs_return_total)
         while True:
             # nếu mà số lần request trước khi "reset" đạt ngưỡng limit của Mapbox
             # hệ thống sẽ tự nghỉ và chờ máy đếm của Mapbox reset sang phút mới
@@ -271,8 +282,7 @@ def simulation_core(coord_pair, remain_time, req_count, curr_total,
 
             # truy xuất thông tin drive-time từ Mapbox API bằng hàm travel_time_req ở trên
             # kết quả thu về là chuỗi giá trị drive-time của điểm gốc tới các TTYT gần nhất
-            queried_res, queried_dist = travel_time_req(gps_lon, gps_lat,
-                                                        facs_list[start_idx: end_idx])
+            queried_res= travel_time_req(gps_lon, gps_lat, facs_list[start_idx: end_idx])
             end_time = datetime.now()
             # cost_time được sử dụng để lưu lại quá trình tính toán trong 1 phút
             # để xem từ lúc reset cho đến hiện tại, hệ thống đã dùng đc bao nhiêu thời gian
@@ -294,22 +304,22 @@ def simulation_core(coord_pair, remain_time, req_count, curr_total,
         # thì sẽ thay giá trị drive-time thành 999999 để chắc chắn rằng kết quả N/A
         # ko làm ảnh hưởng tới việc tính toán các giá trị có thể thu thập thực tế
         queried_res = [999999 if x is None else x for x in queried_res]
-        queried_dist = [999999 if x is None else x for x in queried_dist]
         final_drive_res += queried_res
-        final_drive_dist += queried_dist
         # tăng số req_count để phản ánh việc request hoàn thành
         req_count += 1
         # bởi vì Mapbox tính số lượt sử dụng Matrix API theo số lượng toạ độ request
         # nên hệ thống cần kiểm tra đã sử dụng vượt quá lượng free hay chưa
         curr_total += end_idx - start_idx + 1
-        if remain_req_month - curr_total >= max_coord_req:
-            raise Exception('Vượt quá số lần request free hàng tháng. Hãy thay token key mới')
     # Lấy giá trị thấp nhất từ chuỗi thu thập được và trả về hàm khác
-    min_drive = min(final_drive_res)
-    min_facs_idx = np.argmin(final_drive_res)
-    min_facs = facs_df_45.loc[min_facs_idx, 'Facility_Name']
-    min_dist = final_drive_dist[min_facs_idx]
-    return min_drive, min_facs, min_dist, req_count, curr_total, remain_time
+    min_drive_list = []
+    min_facs_list = []
+    for i in range(len(filter_prop)):
+        col_drive_res = final_drive_res[i*facs_return:(i+1)*facs_return]
+        min_drive_list.append(min(col_drive_res))
+        min_facs_idx = np.argmin(col_drive_res)
+        min_facs = facs_df_45.loc[min_facs_idx+i*facs_return, 'Code']
+        min_facs_list.append(min_facs)
+    return min_drive_list, min_facs_list, req_count, curr_total, remain_time
 
 
 def main():
@@ -318,12 +328,12 @@ def main():
     :return: None
     """
     # biến source_df là bảng chứa các toạ độ gốc
-    source_df = pd.read_csv('./Data/iso_chrone.csv')
+    source_df = pd.read_csv('./Data/iso_chrone_OOG.csv')
     # biến dest_facs là bảng chứa các toạ độ điểm đến cuối
-    dest_facs = pd.read_csv('./Data/stroke_facs_latest.csv')
-    dest_facs = deepcopy(dest_facs[['Name_English',
-                                    'longitude', 'latitude', 'pro_name_e']])
-    dest_facs.columns = ['Facility_Name', 'Lon', 'Lat', 'Province']
+    dest_facs = pd.read_csv('./Data/VSS_List_22_11_2021.csv')
+    dest_facs = deepcopy(dest_facs[['Code', 'Name', 'Level',
+                                    'Lon', 'Lat']])
+    # dest_facs.columns = ['Facility_Name', 'Lon', 'Lat', 'Province']
 
     # Ví dụ: đối với việc lập isochrone map cho khả năng tiếp cận các TTYT hỗ trợ đột quỵ
     # thì source_df là bảng chứa toàn bộ các điểm trong Việt Nam
@@ -353,27 +363,36 @@ def main():
     # giá trị này quyết định xem top N các TTYT được dùng để tìm thời gian
     # thay vì là phải tìm toàn bộ các TTYT có ở VN, để tiết kiệm chi phí/số lượt request
     # thay đổi giá trị này cho phù hợp với nhu cầu tính toán
-    req_facs_num = 24
+    req_facs_num = 1
+
+    used_properties = ['Hạng đặc biệt','Hạng 1', 'Hạng 2', 'Hạng 3']
 
     # vòng lặp sẽ lần lượt xử lý từng dòng giá trị của bảng source_df
     # truy xuất thời gian drive-time và xử lý kết quả
     for idx in tqdm(range(number_of_simulation)):
         # trích xuất dữ liệu của bảng source_df tại dòng có thứ tự idx
-        curr_pair = source_df.iloc[idx, :]
+        curr_pair = source_df.iloc[idx, :2]
         time_of_req = datetime.today()
         # chạy hàm simulation_core để truy xuất thời gian di chuyển gần nhất
         # cho điểm có toạ độ tại dòng idx của bảng source_df
-        min_drive, min_facs, min_dist, req_count, total_request, remain_time = simulation_core(curr_pair,
+        min_drive, min_facs, req_count, total_request, remain_time = simulation_core(curr_pair,
                                                                                                remain_time,
                                                                                                req_count,
                                                                                                total_request,
                                                                                                dest_facs,
-                                                                                               req_facs_num)
+                                                                                               req_facs_num,
+                                                                                               'Level',
+                                                                                               used_properties)
         print('Còn {} lượt toạ độ request từ Mapbox'.format(str(remain_req_month - total_request)))
         start_time = datetime.now()
         # sau đó ghi giá trị lại
-        record_result((time_of_req, curr_pair[0], curr_pair[1], min_drive, min_facs, min_dist), 'csv')
+        # TODO: merge return dataset to produce tuple of tuple
+        record_res = [(time_of_req, curr_pair[0], curr_pair[1],) + x for x in zip(min_drive, min_facs)]
+        record_result(record_res)
         end_time = datetime.now()
+        
+        if remain_req_month - total_request <= max_coord_req:
+            raise Exception('Vượt quá số lần request free hàng tháng. Hãy thay token key mới')
         # tính toán thời gian còn thiếu cho đủ 60s để phục vụ việc reset
         remain_time -= (end_time - start_time).total_seconds()
         # các câu lệnh kiểm tra điều kiện để reset bộ đếm và kiểm tra hệ thống
@@ -388,11 +407,11 @@ def main():
 
 
 if __name__ == '__main__':
-    file_name = './Data/gadm_vietnam.geojson'
-    edges = gpd.read_file(file_name, driver='GeoJSON')
-    random_gps(edges)
+    # file_name = './Data/gadm_vietnam.geojson'
+    # edges = gpd.read_file(file_name, driver='GeoJSON')
+    # random_gps(edges, 0.03)
 
-    # main()
+    main()
 
     # record_result((1, 2, 3), 'csv')
     pass
