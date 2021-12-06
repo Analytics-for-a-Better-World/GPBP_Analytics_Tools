@@ -12,12 +12,12 @@ import math
 
 # transform tif image from CHIRPS to csv
 
-# input_raster = "./Data/CHIRPS/tif/daily/"
-# save_dir = "./Data/CHIRPS/Raw/daily/"
+# input_raster = "./Data/CHIRPS/tif/"
+# save_dir = "./Data/CHIRPS/Raw/"
 # # out_csv = "demo_out_xyz.csv"
 # rtxyz = Raster2xyz()
 # file_names = os.listdir(input_raster)
-# # file_names = ['chirps-v2.0.2011.11.tif']
+# file_names = ['chirps-v2.0.2016.12.13.tif']
 # for file_name in file_names:
 #     if 'tif' not in file_name:
 #         continue
@@ -117,4 +117,12 @@ from tqdm import tqdm
 # chirps_df.drop(drop_list, inplace=True)
 # chirps_df.to_csv("./Data/CHIRPS/chirps_vn_data.csv",
 #                  index=False)
+list_df = pd.read_csv('./Data/idx_file.csv')
+idx_list = list_df['idx'].to_numpy()
+check_df = pd.read_csv('./Data/CHIRPS/Raw/chirps-v2.0.2020.10.csv')
+check_df.columns = ['Lon', 'Lat', 'mm']
+check_df = check_df.loc[idx_list, ['Lon', 'Lat', 'mm']]
+max_idx = np.argmax(check_df['mm'])
+heaviest = check_df.iloc[max_idx, :]
+
 pass

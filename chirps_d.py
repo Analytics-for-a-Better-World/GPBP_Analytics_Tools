@@ -28,22 +28,10 @@ def open_connection():
 
 
 def record_result(res_list: tuple):
-    """
-    record the result into mysql db to preserve data
-    :param res_list: the tuple of the queried result. It must contain these:
-        - Time of request: DATE
-        - Coordinates: list of (lon, lat) saved in TEXT
-        - Province Name: VARCHAR
-        - Driving time for 45 facilities: the list are saved as a full string
-        - Haversine distance for 45 facilities: the list are saved as a full str
-        - Mapbox API's response time: list of request times across all 5 queries
-        - Total time for one full run on each GPS point: one
-    :return:
-    """
     mydb = open_connection()
     cursor = mydb.cursor()
-    insert_query = """  INSERT INTO chirps_d(max_rain, timeframe) 
-                        VALUES(%s ,%s)"""
+    insert_query = """  INSERT INTO chirps_d_donghoi(sq1, sq2, sq3, sq4, timeframe) 
+                        VALUES(%s,%s,%s, %s ,%s)"""
     cursor.execute(insert_query, res_list)
     mydb.commit()
     cursor.close()
@@ -93,7 +81,7 @@ def check_time(timeframe):
     mydb = open_connection()
     cursor = mydb.cursor()
     insert_query = """select count(*)
-                     from chirps_d where timeframe = %s"""
+                     from chirps_d_donghoi where timeframe = %s"""
     cursor.execute(insert_query, (timeframe,))
     check_num = cursor.fetchone()
     mydb.commit()
@@ -105,14 +93,17 @@ def check_time(timeframe):
 url = 'https://data.chc.ucsb.edu/products/CHIRPS-2.0/global_daily/tifs/p05/'
 ext = '.gz'
 root_dir = 'D:/tmp/'
-list_df = pd.read_csv('./Data/CHIRPS/chirps_daily_idx.csv')
-idx_list = list_df['idx'].to_numpy()
+# list_df = pd.read_csv('./Data/CHIRPS/chirps_daily_idx.csv')
+idx_list = [2041154, 2039048, 2041155, 2039049]
 for yr in tqdm(yrs_list):
     check_url = url + yr + '/'
     check_urls = listFD(check_url, ext)
     for files in tqdm(check_urls):
         time_frame = files.split('/')[0]
         time_frame = '-'.join(time_frame.split('.')[-5:-2]).strip()
+        month = time_frame.split('-')[1]
+        if month != '10':
+            continue
         temp = check_time(time_frame)
         if temp == 1:
             continue
@@ -130,6 +121,38 @@ for yr in tqdm(yrs_list):
 
         check_df = pd.read_csv(root_dir + 'tmp.csv')
         check_df.columns = ['Lon', 'Lat', 'mm']
-        check_df = check_df.loc[idx_list, ['mm']]
-        max_rain = max(check_df.to_numpy().tolist())
-        record_result((max_rain[0], time_frame,))
+        check_df = np.squeeze(check_df.loc[idx_list, ['mm']].to_numpy()).tolist()
+        record_result(tuple(check_df + [time_frame]))
+
+ext = '.tif'
+root_dir = 'D:/tmp/'
+# list_df = pd.read_csv('./Data/CHIRPS/chirps_daily_idx.csv')
+idx_list = [2041154, 2039048, 2041155, 2039049]
+for yr in tqdm(yrs_list):
+    check_url = url + yr + '/'
+    check_urls = listFD(check_url, ext)
+    for files in tqdm(check_urls):
+        time_frame = files.split('/')[0]
+        time_frame = '-'.join(time_frame.split('.')[-4:-1]).strip()
+        month = time_frame.split('-')[1]
+        if month != '10':
+            continue
+        temp = check_time(time_frame)
+        if temp == 1:
+            continue
+        with open(root_dir + 'tmp.tif', 'wb') as out_file:
+            content = requests.get(check_url + files, stream=True).content
+            out_file.write(content)
+
+        # with gzip.open(root_dir + 'tmp.tif.gz', 'rb') as f_in:
+        #     with open(root_dir + 'tmp.tif', 'wb') as f_out:
+        #         shutil.copyfileobj(f_in, f_out)
+
+        rtxyz = Raster2xyz()
+        rtxyz.translate(root_dir + 'tmp.tif',
+                        root_dir + 'tmp.csv')
+
+        check_df = pd.read_csv(root_dir + 'tmp.csv')
+        check_df.columns = ['Lon', 'Lat', 'mm']
+        check_df = np.squeeze(check_df.loc[idx_list, ['mm']].to_numpy()).tolist()
+        record_result(tuple(check_df + [time_frame]))

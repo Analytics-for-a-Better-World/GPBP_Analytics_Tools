@@ -19,3 +19,19 @@ from datetime import datetime
 
 if [False, False, True]:
     print('a')
+
+idx_df = pd.read_csv('./Data/CHIRPS/chirps_daily_idx.csv')
+idx_df.sort_values('Lon', inplace=True)
+sq_size = 5
+dec_level = 2
+lon = 106.6
+lat = 17.47
+upper_longitude = lon + sq_size * math.pow(10, -dec_level)
+lower_longitude = lon - sq_size * math.pow(10, -dec_level)
+upper_latitude = lat + sq_size * math.pow(10, -dec_level)
+lower_latitude = lat - sq_size * math.pow(10, -dec_level)
+new_flood_df = idx_df.where(idx_df["Lon"] <= upper_longitude).dropna()
+new_flood_df = new_flood_df.where(new_flood_df["Lon"] >= lower_longitude).dropna()
+new_flood_df = new_flood_df.where(new_flood_df["Lat"] <= upper_latitude).dropna()
+new_flood_df = new_flood_df.where(new_flood_df["Lat"] >= lower_latitude).dropna()
+print(new_flood_df['idx'].to_numpy())
