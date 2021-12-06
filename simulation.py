@@ -1,3 +1,7 @@
+"""
+This is my original code for the simulation used in blog 3
+"""
+
 import geopandas as gpd
 import pandas as pd
 import numpy as np

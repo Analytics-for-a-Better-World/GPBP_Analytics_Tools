@@ -1,3 +1,8 @@
+"""
+This is the code used for monthly CHIRPS data download and analysis
+This is different from the daily one because, as for monthly data, I actually downloaded and stored the files
+while for daily data files, I can only store each file temporarily and delete them after I am done with the extraction
+"""
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -14,7 +19,7 @@ def listFD(url, ext=''):
             node.get('href').endswith(ext)]
 
 
-url = 'https://data.chc.ucsb.edu/products/CHIRPS-2.0/global_daily/tifs/p05/'
+url = 'https://data.chc.ucsb.edu/products/CHIRPS-2.0/global_monthly/tifs/'
 ext = '.gz'
 
 import os
@@ -95,16 +100,16 @@ def rasterize(tif_dir, save_dir):
         rtxyz.translate(input_tif, out_csv)
 
 
-#
-# yrs = np.arange(1981, 2021, 1)
-# tar_folder = root_dir + 'Data/CHIRPS/Daily/tar/'
-# for yr in yrs:
-#     daily_url = url + str(int(yr)) + '/'
-#     download_missing_files(tar_folder, tar_folder, daily_url, ext)
-# tif_folder = root_dir + 'Data/CHIRPS/Daily/tif/'
-# unzip_missing_files(tar_folder, tif_folder)
-# csv_folder = root_dir + 'Data/CHIRPS/Daily/Raw/'
-# rasterize(tif_folder, csv_folder)
+yrs = np.arange(1981, 2021, 1)
+tar_folder = root_dir + 'Data/CHIRPS/Daily/tar/'
+for yr in yrs:
+    daily_url = url + str(int(yr)) + '/'
+    download_missing_files(tar_folder, tar_folder, daily_url, ext)
+tif_folder = root_dir + 'Data/CHIRPS/Daily/tif/'
+unzip_missing_files(tar_folder, tif_folder)
+csv_folder = root_dir + 'Data/CHIRPS/Daily/Raw/'
+rasterize(tif_folder, csv_folder)
+
 
 def open_connection():
     """
@@ -154,7 +159,7 @@ for file in tqdm(file_list):
     check_file.columns = ['Lon', 'Lat', 'mm']
     check_file = check_file.loc[idx_list, ['mm']]
     check_value = max(np.squeeze(check_file.to_numpy()).tolist())
-    merge_list = (check_value, col_name, )
+    merge_list = (check_value, col_name,)
     record_result(merge_list)
     pass
 

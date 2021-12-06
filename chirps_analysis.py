@@ -1,3 +1,6 @@
+"""
+This is my debug code for the CHIRPS daily data analysis
+"""
 import geopandas as gpd
 import pandas as pd
 import numpy as np

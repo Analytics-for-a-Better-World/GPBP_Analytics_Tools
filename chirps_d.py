@@ -1,3 +1,6 @@
+"""
+This code is used to extract all CHIRPS daily data for Dong Hoi Hospital
+"""
 import geopandas as gpd
 import pandas as pd
 import numpy as np

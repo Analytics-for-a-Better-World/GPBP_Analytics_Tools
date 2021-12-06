@@ -1,3 +1,7 @@
+"""
+This code is used to extract all daily data for Vietnam from CHIRPS
+"""
+
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup

@@ -1,3 +1,6 @@
+"""
+Debug code for the simulatin analysis
+"""
 import pandas as pd
 
 root_dir = './'
