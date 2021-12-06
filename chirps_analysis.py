@@ -31,14 +31,14 @@ def open_connection():
 
 mydb = open_connection()
 cursor = mydb.cursor()
-insert_query = """select * from chirps_d"""
+insert_query = """select * from chirps_d_donghoi"""
 cursor.execute(insert_query)
 chirps_daily_data = cursor.fetchall()
 mydb.commit()
 cursor.close()
 mydb.close()
 chirps_daily_df = pd.DataFrame(chirps_daily_data)
-chirps_daily_df.columns = ['max_rain', 'timeframe']
+chirps_daily_df.columns = ['sq1', 'sq2', 'sq1', 'sq1', 'timeframe']
 
 yrs_list = [str(int(x)) for x in np.arange(1981, 2022, 1)]
 
