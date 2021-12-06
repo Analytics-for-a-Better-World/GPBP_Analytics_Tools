@@ -19,7 +19,7 @@ max_req_min = 60
 root_dir = './'
 max_coord_req = 25
 # mọi người có thể thay đổi giá trị của token này thành chuỗi token key của mọi người trước khi chạy hệ thống
-token = """pk.eyJ1IjoidHVhbmh1czkzIiwiYSI6ImNrd200aGp6bjB6cG0yb3BkcHd0dWx5bngifQ.3pcngKA73DHIqvkr2vmD9g"""
+token = """sk.eyJ1Ijoid2JsZGgiLCJhIjoiY2t3dTNzdXJzMW00eTMycW8zbTgybGltdyJ9.cRydfF6Jz6BDxgtmhgxGAA"""
 # trước khi chạy thì phải sửa giá trị này để tránh việc sử dụng quá số lượng cho phép
 # truy cập trang https://account.mapbox.com/statistics/ để biết lượng request đã dùng
 # và lượng request free còn cho phép trong tháng
@@ -99,9 +99,9 @@ def open_connection():
     mydb = connect(
         # thay đổi thông tin để kết nối tới hệ thống CSDL
         host="localhost",  # địa chỉ IP của hệ thống
-        user="xxx",  # tên tài khoản đăng nhập
-        password="xxx",  # password của CSDL
-        database='xxx'  # tên CSDL
+        user="root",  # tên tài khoản đăng nhập
+        password="Ahihi@123",  # password của CSDL
+        database='GPBP'  # tên CSDL
     )
     return mydb
 
@@ -164,8 +164,8 @@ def record_result(res_list: tuple, dest_type='DB'):
         mydb = open_connection()
         cursor = mydb.cursor()
         # Thay câu lệnh này với tên bảng, tên cột tương ứng trong bảng CSDL
-        insert_query = """INSERT INTO isochrone_oog(req_time, source_lon, source_lat, min_drive, closest_fac) 
-                        VALUES (%s ,%s, %s ,%s, %s)"""
+        insert_query = """INSERT INTO isochrone_oog(req_time, source_lon, source_lat, min_drive, closest_fac, facs_type) 
+                        VALUES (%s ,%s, %s ,%s, %s, %s)"""
         cursor.executemany(insert_query, res_list)
         mydb.commit()
         cursor.close()
@@ -387,7 +387,7 @@ def main():
         start_time = datetime.now()
         # sau đó ghi giá trị lại
         # TODO: merge return dataset to produce tuple of tuple
-        record_res = [(time_of_req, curr_pair[0], curr_pair[1],) + x for x in zip(min_drive, min_facs)]
+        record_res = [(time_of_req, curr_pair[0], curr_pair[1],) + x for x in zip(min_drive, min_facs, used_properties)]
         record_result(record_res)
         end_time = datetime.now()
         
