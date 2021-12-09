@@ -9,6 +9,11 @@ from flask import Flask, flash, redirect, render_template, request, session, \
 import json
 import requests
 import math
+from copy import deepcopy
+from geopandas import GeoDataFrame
+from shapely.geometry import Point
+import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 # transform tif image from CHIRPS to csv
 
@@ -85,11 +90,6 @@ import numpy as np
 #                             on=['Lat', 'Lon'])
 # chirps_df.to_csv("./Data/CHIRPS/chirps_full_data.csv", index=False)
 # chirps_df.to_csv("./Data/CHIRPS/chirps_full_data.csv", index=False)
-import geopandas as gpd
-from geopandas import GeoDataFrame
-from shapely.geometry import Point
-import matplotlib.pyplot as plt
-from tqdm import tqdm
 
 # vn_prov = gpd.read_file('./Data/gadm_vietnam.geojson')
 # vn_bound = vn_prov.geometry.unary_union
@@ -117,12 +117,135 @@ from tqdm import tqdm
 # chirps_df.drop(drop_list, inplace=True)
 # chirps_df.to_csv("./Data/CHIRPS/chirps_vn_data.csv",
 #                  index=False)
-list_df = pd.read_csv('./Data/idx_file.csv')
-idx_list = list_df['idx'].to_numpy()
-check_df = pd.read_csv('./Data/CHIRPS/Raw/chirps-v2.0.2020.10.csv')
-check_df.columns = ['Lon', 'Lat', 'mm']
-check_df = check_df.loc[idx_list, ['Lon', 'Lat', 'mm']]
-max_idx = np.argmax(check_df['mm'])
-heaviest = check_df.iloc[max_idx, :]
 
+# list_df = pd.read_csv('./Data/idx_file.csv')
+# idx_list = list_df['idx'].to_numpy()
+# check_df = pd.read_csv('./Data/CHIRPS/Raw/chirps-v2.0.2020.10.csv')
+# check_df.columns = ['Lon', 'Lat', 'mm']
+# check_df = check_df.loc[idx_list, ['Lon', 'Lat', 'mm']]
+# max_idx = np.argmax(check_df['mm'])
+# heaviest = check_df.iloc[max_idx, :]
+root_dir = './'
+
+
+# vn_prov = gpd.read_file(root_dir + '/Data/gadm_vietnam.geojson')
+# map_data_full = pd.read_csv(root_dir + "/Data/drive_time_res_oog.csv")
+# map_data_full.columns = ['req_time', 'Lon', 'Lat', 'min_drive', 'closest_facs_code', 'facs_type']
+# map_data = map_data_full.where(map_data_full['facs_type'] == 'Hạng đặc biệt').dropna()
+# map_data = map_data[['Lon', 'Lat', 'min_drive']]
+# map_data.columns = ['Lon', 'Lat', 'Hạng đặc biệt']
+# map_data['Hạng 1'] = map_data_full.where(map_data_full['facs_type'] == 'Hạng 1').dropna()['min_drive'].to_numpy()
+# map_data['Hạng 2'] = map_data_full.where(map_data_full['facs_type'] == 'Hạng 2').dropna()['min_drive'].to_numpy()
+# map_data['Hạng 3'] = map_data_full.where(map_data_full['facs_type'] == 'Hạng 3').dropna()['min_drive'].to_numpy()
+# map_data.reset_index(drop=True, inplace=True)
+
+# from copy import deepcopy
+# north_df = deepcopy(map_data)
+# north_df['Lat'] += 0.01
+#
+# south_df = deepcopy(map_data)
+# south_df['Lat'] -= 0.01
+#
+# east_df = deepcopy(map_data)
+# east_df['Lon'] += 0.01
+#
+# west_df = deepcopy(map_data)
+# west_df['Lon'] -= 0.01
+#
+# northeast_df = deepcopy(map_data)
+# northeast_df['Lat'] += 0.01
+# northeast_df['Lon'] += 0.01
+#
+# northwest_df = deepcopy(map_data)
+# northwest_df['Lat'] += 0.01
+# northwest_df['Lon'] -= 0.01
+#
+# southeast_df = deepcopy(map_data)
+# southeast_df['Lat'] -= 0.01
+# southeast_df['Lon'] += 0.01
+#
+# southwest_df = deepcopy(map_data)
+# southwest_df['Lat'] -= 0.01
+# southwest_df['Lon'] -= 0.01
+#
+#
+# map_data = pd.concat([map_data, north_df])
+# map_data = pd.concat([map_data, south_df])
+# map_data = pd.concat([map_data, east_df])
+# map_data = pd.concat([map_data, west_df])
+# map_data = pd.concat([map_data, northeast_df])
+# map_data = pd.concat([map_data, northwest_df])
+# map_data = pd.concat([map_data, southeast_df])
+# map_data = pd.concat([map_data, southwest_df])
+#
+# map_data.reset_index(drop=True, inplace=True)
+
+# min_drives = []
+# for i in range(map_data.shape[0]):
+#     min_drives.append(min(map_data.iloc[i, 2:].to_numpy()))
+# map_data['min_drive'] = min_drives
+# prov_list = []
+# for i in tqdm(range(map_data.shape[0])):
+#     curr_lon = map_data['Lon'][i]
+#     curr_lat = map_data['Lat'][i]
+#     check_point = Point(curr_lon, curr_lat)
+#     temp = vn_prov.contains(check_point)
+#     temp = temp.where(temp == True).dropna()
+#     if temp.shape[0] > 0:
+#         prov_idx = temp.index[0]
+#         prov = vn_prov['NAME_1'][prov_idx]
+#         prov_list.append(prov)
+#     else:
+#         prov_list.append(None)
+# map_data['Prov'] = prov_list
+# map_data.to_csv('./Data/drive_time_oog_full.csv', index=False)
+
+def find_closest_points(flood_df_full, flood_scenario, facs_df, aggregate_func,
+                        sq_size=5, dec_level=3):
+    new_facs_df = deepcopy(facs_df)
+    # round them accordingly
+    new_facs_df['Lon'] = new_facs_df['Lon'].apply(
+        lambda x: round(x, dec_level))
+    new_facs_df['Lat'] = new_facs_df['Lat'].apply(
+        lambda x: round(x, dec_level))
+    new_facs_df[flood_scenario] = np.ones(new_facs_df.shape[0], dtype=float) * np.nan
+    # iterate through all the facilities to find the corresponding point
+    for idx in tqdm(range(new_facs_df.shape[0])):
+        current_facs_df = new_facs_df.iloc[idx, :]
+        facs_longitude = current_facs_df["Lon"]
+        facs_latitude = current_facs_df["Lat"]
+
+        upper_longitude = facs_longitude + sq_size * math.pow(10, -dec_level)
+        lower_longitude = facs_longitude - sq_size * math.pow(10, -dec_level)
+        upper_latitude = facs_latitude + sq_size * math.pow(10, -dec_level)
+        lower_latitude = facs_latitude - sq_size * math.pow(10, -dec_level)
+
+        # queries the dataframe to find the flood risk points
+        new_flood_df = flood_df_full.where(
+            flood_df_full["Lon"] < upper_longitude).dropna()
+        new_flood_df = new_flood_df.where(
+            new_flood_df["Lon"] > lower_longitude).dropna()
+        new_flood_df = new_flood_df.where(
+            new_flood_df["Lat"] < upper_latitude).dropna()
+        new_flood_df = new_flood_df.where(
+            new_flood_df["Lat"] > lower_latitude).dropna()
+
+        # this is to prevent the case of no suitable data points
+        # breaking the function
+        if new_flood_df.shape[0] == 0:
+            continue
+
+        new_facs_df.iloc[idx, 4] = aggregate_func(
+            new_flood_df[flood_scenario].to_numpy())
+    return new_facs_df
+
+
+pop_file = root_dir + '/Data/population_vnm_2018-10-01(Facebook).csv'
+fb_pop_data = pd.read_csv(pop_file)
+fb_pop_data.columns = ['Lat', 'Lon', 'Pop_2015', 'Pop_2020']
+full_df = pd.read_csv('./Data/drive_time_oog_ori.csv')
+map_data_90m_pop = find_closest_points(fb_pop_data, 'Pop_2020',
+                                       full_df, sum,
+                                       15, 3)
+map_data_90m_pop.to_csv(root_dir + 'Data/map_w_pop.csv', index=False)
 pass
