@@ -15,7 +15,7 @@ def getvariables(n, m, X, Y):
     return(Xvalues, Yvalues)
     
 
-def OptimizationModel(array_household, current_hospitals_ID, new_hospitals_ID, distance_matrix, S, hosp_count, maxTimeInSeconds=100, mipGap=.001, trace=False):
+def OptimizationModel(array_household, current_hospitals_ID, new_hospitals_ID, distance_matrix, S, hosp_count, mipGap=.001, trace=False):
     
     import time
     import gurobipy as gb
@@ -47,7 +47,6 @@ def OptimizationModel(array_household, current_hospitals_ID, new_hospitals_ID, d
     
     M.Params.OutputFlag = trace 
     M.Params.mipgap     = mipGap
-    M.Params.timelimit  = maxTimeInSeconds
     
     # Decision variables
     X = M.addVars(m, vtype=GRB.BINARY)
