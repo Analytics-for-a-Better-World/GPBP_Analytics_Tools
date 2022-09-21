@@ -42,7 +42,7 @@ For detailed information on this and demos on integrating Github with Colab [Cli
 The design, development and deployment of the Geospatial Planning and Budgeting Platform is led by teams at [World Bank](https://www.worldbank.org/en/home) and [Analytics for a Better World](https://analyticsbw.org) in collaboration with governmental, non-governmental organisations, startups and researchers from around the globe.
 
 - [Britt van Veggel](https://www.linkedin.com/in/britt-van-veggel-754288a8/) - MSc. Applied Mathematics, TU Delft
-- [Corien Westveer]()
+- [Corien van Kleij - Westveer](https://www.linkedin.com/in/corien-van-kleij-87890b146/) - Master's Student Computational Science, University of Amsterdam
 - [Prof. Dick Den Hertog](https://www.uva.nl/profiel/h/e/d.denhertog/d.den-hertog.html)- Science to Impact Director at Analytics for a Better World Institute and Professor at University of Amsterdam
 - [Fleur Theulen](https://www.linkedin.com/in/fleur-theulen-1054461b4/) - Master Student Business Analytics and Operations Research at Tilburg University
 - [Prof. Joaquim Gromicho](https://www.linkedin.com/in/joaquim-gromicho-a891643/) - Science and Education Officer at ORTEC & Professor at University of Amsterdam
