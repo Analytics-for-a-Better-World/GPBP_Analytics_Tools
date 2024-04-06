@@ -19,6 +19,11 @@ This research seeks to address two main objectives:
 #### Outputs
 - Develop comprehensive risk profiles for each infrastructure type.
 - Create visual representations (maps, charts) to depict areas of high risk and criticality.
-Impact
+
+### Impact
 
 This research is poised to provide a nuanced understanding of how climate change intersects with infrastructure utility and dependency. The findings are expected to be crucial for policymakers and planners in prioritizing interventions and resources. Furthermore, the study aims to contribute significantly to the academic discourse on climate resilience and infrastructure planning. The proposed thesis sets out to deliver an in-depth, data-centric analysis of Serbia's infrastructure resilience to climate change. By focusing on the dual aspects of vulnerability and criticality, the study endeavors to provide a holistic view of the challenges and needs in infrastructure planning and climate adaptation strategies in Serbia.
+
+#### References
+- https://www.oecd.org/environment/cc/policy-perspectives-climate-resilient-infrastructure.pdf
+- 
