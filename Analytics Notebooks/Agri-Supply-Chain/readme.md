@@ -13,7 +13,6 @@ Climate Change Mitigation: By enhancing supply chain efficiency, the project wil
 2. ESRI LULC Data: This is used to assess land use and identify optimal locations for storage and processing facilities.
 3. Data.gov.in: For infrastructure data on warehouses, markets, and crop productivity statistics.
 4. OpenStreetMap: To analyze the road network for efficient transportation routes.
-5. Price Tracking: Price tracking is integral to understanding market dynamics and optimizing supply chain decisions accordingly.
 - Integration with Government Initiatives: The project will align with existing government initiatives such as the National Mission on Food Processing, Pradhan Mantri Fasal Bima Yojana, National Agriculture Market (eNAM), and PM Kisan Sampada Yojana. This will ensure synergy with national efforts to improve food processing, market access, and agricultural insurance.
 - Technology Adoption and Innovation: Emphasizing the need for technological advancement in the supply chain, from cold storage solutions to logistics optimization, the project will explore innovative approaches to tackle existing challenges.
 - Enhancing Food Safety and Quality Standards: Aligning with FSSAI's efforts, the project will also focus on improving food safety and quality throughout the supply chain, ensuring that consumers receive high-quality produce.
@@ -31,3 +30,13 @@ The project aims to deliver a comprehensive supply chain optimization model for 
 - https://www.sciencedirect.com/science/article/pii/S0168169923005495
 - https://www.cnbctv18.com/economy/mp-farmer-loss-distress-sales-cold-storage-tomato-garlic-shivraj-singh-chauhan-16561621.htm
 - https://ijras.org/administrator/components/com_jresearch/files/publications/IJRAS_976_FINAL.pdf
+
+## Agri-Maps and Data on Districts available from http://jnkvv.org/PDF/27012021221604Atlas%20JNKVV%20FINAL.pdf 
+
+<img width="671" alt="image" src="https://github.com/Analytics-for-a-Better-World/GPBP_Analytics_Tools/assets/42402451/05dc5c01-657d-4fe0-a897-57196fcfc4e3">
+
+<img width="670" alt="image" src="https://github.com/Analytics-for-a-Better-World/GPBP_Analytics_Tools/assets/42402451/d2c33d5b-cb7b-48e6-9b0c-33d6773fecc8">
+
+
+
+
