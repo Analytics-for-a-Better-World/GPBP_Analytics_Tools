@@ -6,7 +6,7 @@ The agricultural sector in India, particularly for perishable commodities like t
 
 ### Project Objectives
 
-- Reduce Food Loss and Waste: The project aims to significantly reduce tomato post-harvest losses by optimising the supply chain, thereby contributing to food security and economic stability for farmers and consumers.
+- Reduce Food Loss and Waste: The project aims to significantly reduce tomato post-harvest losses by optimising the supply chain, thereby contributing to farmers' and consumers' food security and economic stability.
 Climate Change Mitigation: By enhancing supply chain efficiency, the project will help reduce greenhouse gas emissions associated with food wastage and inefficient logistics, thus contributing to climate change mitigation efforts.
 - Data Utilization and Analysis: The project will utilize data from various sources:
 1. Meta Segment Anything Model: To identify tomato farms and potential areas for infrastructure development.
@@ -29,4 +29,5 @@ The project aims to deliver a comprehensive supply chain optimization model for 
 - https://wri-india.org/sites/default/files/Food%20Losss%20and%20Waste_August%202021.pdf
 - https://krishikosh.egranth.ac.in/items/60cd3087-5fc2-46b7-8637-1c9fd3fb0927
 - https://www.sciencedirect.com/science/article/pii/S0168169923005495
+- https://www.cnbctv18.com/economy/mp-farmer-loss-distress-sales-cold-storage-tomato-garlic-shivraj-singh-chauhan-16561621.htm
 - https://ijras.org/administrator/components/com_jresearch/files/publications/IJRAS_976_FINAL.pdf
