@@ -1,8 +1,8 @@
-## Optimizing Tomato Supply Chain in Andhra Pradesh, India: A Data-Driven Approach to Reducing Food Loss, Mitigating Climate Impact, and Enhancing Food Security
+## Optimizing Tomato Supply Chain in Madhya Pradesh, India: A Data-Driven Approach to Reducing Food Loss, Mitigating Climate Impact, and Enhancing Food Security
 
 ### Background
 
-The agricultural sector in India, particularly for perishable commodities like tomatoes, faces significant challenges in supply chain management, leading to substantial food loss and environmental impact. According to 2022 data, India experienced a loss of 6-15% in fruits and 5-12% in vegetables, including tomatoes, primarily due to inadequate storage and transportation infrastructure. These inefficiencies not only contribute to economic losses, estimated at over ₹1,52,000 crores, but also exacerbate climate change through unnecessary carbon emissions and resource wastage. The project aims to address these challenges by optimizing the tomato supply chain in [Selected State], leveraging openly available data and integrating climate considerations into the supply chain management.
+The agricultural sector in India, particularly for perishable commodities like tomatoes, faces significant challenges in supply chain management, leading to substantial food loss and environmental impact. According to 2022 data, India experienced a loss of 6-15% in fruits and 5-12% in vegetables, including tomatoes, primarily due to inadequate storage and transportation infrastructure. These inefficiencies contribute to economic losses, estimated at over ₹1,52,000 crores, and exacerbate climate change through unnecessary carbon emissions and resource wastage. The project aims to address these challenges by optimizing the tomato supply chain in Madhya Pradesh, leveraging openly available data and integrating climate considerations into the supply chain management.
 
 ### Project Objectives
 
