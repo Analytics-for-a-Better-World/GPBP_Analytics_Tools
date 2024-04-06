@@ -26,4 +26,5 @@ This research is poised to provide a nuanced understanding of how climate change
 
 #### References
 - https://www.oecd.org/environment/cc/policy-perspectives-climate-resilient-infrastructure.pdf
-- 
+- https://medium.com/nemac-blog/feeling-vulnerable-maybe-youre-just-exposed-f2fa0f9df3a4
+- https://www.ipcc.ch/site/assets/uploads/2018/03/SREX-Chap2_FINAL-1.pdf
