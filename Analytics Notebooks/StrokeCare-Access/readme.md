@@ -6,31 +6,31 @@ Stroke remains a formidable global health challenge, with over 12.2 million new 
 
 Stroke types include ischemic (87% of all strokes) and hemorrhagic. Ischemic strokes, caused by blood clots in the brain, are commonly treated with clot-busting medications like tPA, ideally within 3-4.5 hours of symptom onset. Hemorrhagic strokes, resulting from ruptured blood vessels, require controlling bleeding and reducing blood pressure, sometimes necessitating surgery.
 
-Incorporating the critical elements of the 'golden hour' and travel time into the proposal significantly reinforces the need for optimizing geographic accessibility to stroke care centers. The 'golden hour' concept underscores the importance of immediate medical intervention in stroke cases. As each minute passes without treatment, the brain loses approximately 1.9 million cells, emphasizing the urgency for quick access to stroke care. The proximity to and the travel time to a stroke care facility directly impacts the effectiveness of treatments like thrombolytic medicines, which are most effective when administered promptly.
+Incorporating the critical elements of the 'golden hour' and travel time into the proposal significantly reinforces the need to optimize geographic accessibility to stroke care centres. The 'golden hour' concept underscores the importance of immediate medical intervention in stroke cases. As each minute passes without treatment, the brain loses approximately 1.9 million cells, emphasizing the urgency for quick access to stroke care. The proximity to and the travel time to a stroke care facility directly impacts the effectiveness of treatments like thrombolytic medicines, which are most effective when administered promptly.
 
-Geographic accessibility becomes particularly important considering the variability in hospital capabilities to treat strokes. Not all hospitals offer the same level of stroke care, which can result in vital delays if patients need to be transferred to specialized centers. Optimizing the distribution of stroke care centers based on population risk and existing healthcare infrastructure will ensure more equitable access, especially in underserved areas.
+Geographic accessibility becomes particularly important considering the variability in hospital capabilities to treat strokes. Not all hospitals offer the same level of stroke care, which can result in vital delays if patients need to be transferred to specialized centres. Optimizing the distribution of stroke care centres based on population risk and existing healthcare infrastructure will ensure more equitable access, especially in underserved areas.
 
-For the pilot study, two countries with contrasting profiles in terms of stroke burden and healthcare accessibility challenges should be chosen. One possibility could be a country from a high-income region, where the infrastructure is in place but needs optimization for better access, and another from a low-to-middle-income region, where the infrastructure is less developed, and the stroke burden is high. This approach will allow the project to address a range of challenges and assess the scalability of the solution in diverse settings.
+For the pilot study, two countries with contrasting profiles regarding stroke burden and healthcare accessibility challenges should be chosen. One possibility could be a country from a high-income region, where the infrastructure is in place but needs optimization for better access, and another from a low-to-middle-income region, where the infrastructure is less developed and the stroke burden is high. This approach will allow the project to address various challenges and assess the solution's scalability in diverse settings.
 
-By focusing on these aspects, the proposal aims to reduce the time from symptom onset to treatment initiation, thereby improving stroke outcomes and addressing the global health challenge posed by strokes more effectively.
+By focusing on these aspects, the proposal aims to reduce the time from symptom onset to treatment initiation, thereby improving stroke outcomes and more effectively addressing the global health challenge of strokes.
 
-This proposal aims to develop a comprehensive system to optimize the distribution of stroke care centers relative to at-risk populations. By doing so, it seeks to enhance access and reduce treatment initiation times, thereby improving survival rates and decreasing disability associated with stroke.
+This proposal aims to develop a comprehensive system to optimize the distribution of stroke care centres relative to at-risk populations. By doing so, it seeks to enhance access and reduce treatment initiation times, thereby improving survival rates and decreasing disability associated with stroke.
 
 ### Methodology
 
 1.	Stroke Sensitivity Analysis:
 a.	Data Sources: Utilize openly available data such as OpenStreetMap, Healthsites.io, WorldPop, and Meta's high-resolution population estimates.
 b.	Demographic Analysis: Assess population demographics, focusing on age, gender, and known stroke risk factors to identify high-risk groups.
-c.	Stroke Incidence Mapping: Map current stroke incidence rates using global and regional health databases.
+c.	Stroke Incidence Mapping: Using global and regional health databases to map current stroke incidence rates.
 2.	Optimization Modeling:
-a.	Algorithm Development: Create heuristic algorithms to identify optimal locations for stroke care facilities, considering factors like population density, existing healthcare infrastructure, and travel time to existing centers.
+a.	Algorithm Development: Create heuristic algorithms to identify optimal locations for stroke care facilities, considering factors like population density, existing healthcare infrastructure, and travel time to existing centres.
 b.	Scenario Simulation: Run multiple scenarios to evaluate the impact of different facility distributions on accessibility and response times.
 3.	Geographic Mapping and Visualization:
 a.	Mapping Tools: Leverage GIS software for detailed mapping and visualization of current and proposed stroke care networks.
 b.	Accessibility Analysis: Visualize areas with limited access to stroke care, highlighting regions that would benefit most from additional facilities.
 4.	Data Collection and Integration:
 a.	Collaboration with Data Providers: Partner with organizations and platforms providing critical data.
-b.	Real-Time Data Integration: Develop a system for integrating real-time health data to continually update and refine the model.
+b.	Real-Time Data Integration: Develop a system for continually integrating real-time health data to update and refine the model.
 5.	Country Selection Methodology:
 a.	Burden of Disease Analysis: Assess countries based on stroke burden, healthcare infrastructure, and existing care disparities.
 b.	Resource Availability Assessment: Evaluate the availability of resources and the potential for implementation in each country.
@@ -42,11 +42,11 @@ c.	Stakeholder Engagement: Engage with local health authorities and internationa
 - Comprehensive Stroke Care Accessibility Maps: Detailed maps showcasing current and potential accessibility to stroke care facilities.
 - Optimization Model and Analysis Reports: Documentation of the optimization model, including methodologies, algorithms, and scenario analyses.
 - Digital Platform: A dynamic platform for ongoing assessment, visualization, and decision support.
-- Pilot Study Outcomes: Detailed reports on the implementation, challenges, and outcomes of the pilot studies in selected countries.
+**Pilot Study Outcomes**: Detailed reports on the implementation, challenges, and outcomes of pilot studies in selected countries.
 
 ### Conclusion
 
-By improving geographic accessibility to stroke care, this project aims to address the critical window for effective stroke treatment and reduce the global burden of stroke. The proposal combines data-driven analysis with practical implementation, aiming to create a scalable and adaptable solution for enhancing stroke care accessibility worldwide.
+This project aims to address the critical window for effective stroke treatment and reduce the global burden of stroke by improving geographic accessibility to stroke care. The proposal combines data-driven analysis with practical implementation, aiming to create a scalable and adaptable solution for enhancing stroke care accessibility worldwide.
 
 
 ### References
